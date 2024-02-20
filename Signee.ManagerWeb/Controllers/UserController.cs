@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Signee.Domain.Identity;
-using Signee.Infrastructure.PostgreSql.Data;
 using Signee.ManagerWeb.Models.Auth;
 using Signee.Services.Areas.Auth.Contracts;
-using Signee.Services.Areas.Auth.Services;
 
 namespace Signee.ManagerWeb.Controllers;
 
@@ -12,17 +9,11 @@ namespace Signee.ManagerWeb.Controllers;
 [Route("/api/[controller]")]
 public class UserController : ControllerBase
 {
-    // TODO create user repository/Service for managing user
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ApplicationDbContext _context;
-    private readonly ITokenService _tokenService;
+    private readonly IAuthService _authenticationService;
 
-    public UserController(UserManager<ApplicationUser> userManager, ApplicationDbContext context,
-        ITokenService tokenService, ILogger<UserController> logger)
+    public UserController(IAuthService authenticationService)
     {
-        _userManager = userManager;
-        _context = context;
-        _tokenService = tokenService;
+        _authenticationService = authenticationService;
     }
     
     [HttpPost]
@@ -34,19 +25,15 @@ public class UserController : ControllerBase
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _userManager.CreateAsync(
-                new ApplicationUser
-                    { UserName = requestApi.Username, Email = requestApi.Email, Role = requestApi.Role },
-                requestApi.Password!
-            );
+            var result = await _authenticationService.RegisterAsync(requestApi);
 
             if (result.Succeeded)
             {
                 requestApi.Password = string.Empty; // NOT STORING PWD IN MEMORY LONGER THAN NECESSARY
-                return CreatedAtAction(nameof(Register), new { email = requestApi.Email, role = Role.User },
-                    requestApi);
+                return CreatedAtAction(nameof(Register), new { email = requestApi.Email, role = Role.User }, requestApi);
             }
-
+            
+            // TODO use resources to map errors to resource and return localized text
             foreach (var error in result.Errors)
                 ModelState.AddModelError(error.Code, error.Description);
 
@@ -54,7 +41,7 @@ public class UserController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = ex.Message }); // TODO Add some message from resources
+            return BadRequest(new { message = ex.Message });
         }
         
     }
@@ -68,33 +55,12 @@ public class UserController : ControllerBase
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var managedUser = await _userManager.FindByEmailAsync(requestApi.Email!);
-
-            if (managedUser == null)
-                return BadRequest("User does not exist");
-
-            var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, requestApi.Password!);
-
-            if (!isPasswordValid)
-                return BadRequest("Invalid login credentials");
-
-            var userInDb = _context.Users.FirstOrDefault(u => u.Email == requestApi.Email);
-
-            if (userInDb == null)
-                return Unauthorized();
-
-            var jwtToken = _tokenService.GenerateToken(userInDb);
-
-            return Ok(new AuthResponseApi
-            {
-                Username = userInDb.UserName,
-                Email = userInDb.Email,
-                Token = jwtToken,
-            });
+            var authResponse = await _authenticationService.AuthenticateAsync(requestApi);
+            return Ok(authResponse);
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = ex.Message }); // TODO Add some message from resources
+            return BadRequest(new { message = ex.Message });
         }
     }
 }

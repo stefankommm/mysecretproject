@@ -1,6 +1,6 @@
-﻿using Signee.Infrastructure.PostgreSql.Contracts;
+﻿using Signee.Domain.RepositoryContracts.Common;
 
-namespace Signee.Services.Areas.Display.Contracts;
+namespace Signee.Domain.RepositoryContracts.Areas.Display;
 using Display = Domain.Entities.Display.Display;
 
 public interface IDisplayRepository : IGenericRepository<Display>

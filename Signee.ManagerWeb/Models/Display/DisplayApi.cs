@@ -8,7 +8,8 @@ public class DisplayApi
     public string? Name { get; set; }
     public string? Url { get; set; }
     public int? PairingCode { get; set; }
-    public Content? Content { get; set; }
+    public View? Content { get; set; }
 
     public string? CreatedByName { get; set; }
+    public string? ImgUrl { get; set; }
 }

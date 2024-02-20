@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Signee.Domain.Entities.Display;
 
-public class Content
+public class View
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

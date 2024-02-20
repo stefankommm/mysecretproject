@@ -1,12 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signee.Services", "Signee.Services\Signee.Services.csproj", "{101416DE-AA02-45E6-AC0A-379C243BF753}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signee.Services", "Signee.Services\Signee.Services.csproj", "{101416DE-AA02-45E6-AC0A-379C243BF753}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signee.ManagerWeb", "Signee.ManagerWeb\Signee.ManagerWeb.csproj", "{07F88B98-A40C-4B80-8825-EC79201592C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signee.ManagerWeb", "Signee.ManagerWeb\Signee.ManagerWeb.csproj", "{07F88B98-A40C-4B80-8825-EC79201592C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signee.Infrastructure.PostgreSql", "Signee.Infrastructure.PostgreSql\Signee.Infrastructure.PostgreSql.csproj", "{D3D2EA0C-B340-4525-9962-426552E4A66E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signee.Infrastructure", "Signee.Infrastructure\Signee.Infrastructure.csproj", "{D3D2EA0C-B340-4525-9962-426552E4A66E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signee.Domain", "Signee.Domain\Signee.Domain.csproj", "{AE039F97-94B3-4A64-ADB8-E2B879E80643}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signee.Domain", "Signee.Domain\Signee.Domain.csproj", "{AE039F97-94B3-4A64-ADB8-E2B879E80643}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signee.DisplayHandler", "Signee.DisplayHandler\Signee.DisplayHandler.csproj", "{805A36F1-30BB-4026-815F-BCD52F19B09D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signee.Resources", "Signee.Resources\Signee.Resources.csproj", "{58CED115-E485-4ADE-8EB6-CC5B67DC745D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +37,16 @@ Global
 		{AE039F97-94B3-4A64-ADB8-E2B879E80643}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE039F97-94B3-4A64-ADB8-E2B879E80643}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE039F97-94B3-4A64-ADB8-E2B879E80643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{805A36F1-30BB-4026-815F-BCD52F19B09D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{805A36F1-30BB-4026-815F-BCD52F19B09D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{805A36F1-30BB-4026-815F-BCD52F19B09D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{805A36F1-30BB-4026-815F-BCD52F19B09D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58CED115-E485-4ADE-8EB6-CC5B67DC745D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58CED115-E485-4ADE-8EB6-CC5B67DC745D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58CED115-E485-4ADE-8EB6-CC5B67DC745D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58CED115-E485-4ADE-8EB6-CC5B67DC745D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

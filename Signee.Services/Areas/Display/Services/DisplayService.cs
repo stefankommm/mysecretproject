@@ -1,4 +1,5 @@
-﻿using Signee.Services.Areas.Display.Contracts;
+﻿using Signee.Domain.RepositoryContracts.Areas.Display;
+using Signee.Services.Areas.Display.Contracts;
 
 namespace Signee.Services.Areas.Display.Services;
 using Display = Domain.Entities.Display.Display;

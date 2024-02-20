@@ -1,0 +1,35 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Auth_CantCreateUser" xml:space="preserve">
+        <value>Používateľa sa nepodarilo vytvoriť.</value>
+    </data>
+    <data name="Auth_InvalidLoginCredentials" xml:space="preserve">
+        <value>Neplatné prihlasovacie údaje.</value>
+    </data>
+    <data name="Auth_NoExistentUser" xml:space="preserve">
+        <value>Používateľ neexistuje.</value>
+    </data>
+    <data name="ManagerWeb_DisplaysRetreivalError" xml:space="preserve">
+        <value>Pri načítavaní displejov sa vyskytla chyba.</value>
+    </data>
+    <data name="ManagerWeb_DisplayIdRetreivalError" xml:space="preserve">
+        <value>Pri načítavaní displeja s ID: {id} sa vyskytla chyba.</value>
+    </data>
+    <data name="ManagerWeb_ErrorCreatingDisplay" xml:space="preserve">
+        <value>Pri vytváraní nového displeja nastala chyba.</value>
+    </data>
+    <data name="PopulateDb_AdminUserCreationError" xml:space="preserve">
+        <value>Pri vytváraní predvoleného admin účtu sa vyskytla chyba.</value>
+    </data>
+</root>

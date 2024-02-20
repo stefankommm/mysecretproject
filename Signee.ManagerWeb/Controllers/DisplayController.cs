@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Signee.Domain.Entities.Display;
 using Signee.ManagerWeb.Models.Display;
 using Signee.Services.Areas.Display.Contracts;
+using Signee.Resources;
+using Signee.Resources.Resources;
 
 namespace Signee.ManagerWeb.Controllers;
 
@@ -33,6 +35,7 @@ public class DisplayController : ControllerBase
             var display = new Display
             {
                 Name = requestCreateDisplay.Name,
+                ImgUrl = requestCreateDisplay.ImgUrl
             };
 
             await _displayService.AddAsync(display);
@@ -40,7 +43,8 @@ public class DisplayController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = "There was some error creating new display" }); // TODO customize and add to resources
+            // TODO log exception
+            return BadRequest(new { message = Resource.ManagerWeb_ErrorCreatingDisplay });
         }
     }
     
@@ -64,7 +68,8 @@ public class DisplayController : ControllerBase
             return Ok(displayApi);
         } catch (Exception ex)
         {
-            return BadRequest(new { message = $"There was some error retrieving display with id: {id}" }); // TODO customize and add to resources
+            // TODO log exception
+            return BadRequest(new { message = string.Format(Resource.ManagerWeb_DisplayIdRetreivalError, id) });
         }
     }
     
@@ -83,7 +88,8 @@ public class DisplayController : ControllerBase
                 var displayApi = new DisplayApi
                 {
                     Id = display.Id,
-                    Name = display.Name
+                    Name = display.Name,
+                    ImgUrl = display.ImgUrl
                 };
             
                 displaysApi.Add(displayApi);
@@ -93,7 +99,8 @@ public class DisplayController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = $"There was some error retrieving displays" }); // TODO customize and add to resources
+            // TODO log exception
+            return BadRequest(new { message = Resource.ManagerWeb_DisplaysRetreivalError });
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Signee.Infrastructure.PostgreSql.Contracts;
+using Signee.Domain.RepositoryContracts.Common;
 
-namespace Signee.Infrastructure.PostgreSql.Data;
+namespace Signee.Infrastructure.PostgreSql.Common;
 
 public class PostgreSqlRepository<T> : IGenericRepository<T> where T : class
 {
@@ -24,13 +24,13 @@ public class PostgreSqlRepository<T> : IGenericRepository<T> where T : class
     public async Task AddAsync(T entity)
     {
         await _dbSet.AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
+        await SaveChangesTransactionalAsync();
     }
 
     public async Task AddRangeAsync(IEnumerable<T> entities)
     {
         await _dbSet.AddRangeAsync(entities);
-        await _dbContext.SaveChangesAsync();
+        await SaveChangesTransactionalAsync();
     }
     
     public async Task DeleteByIdAsync(object id)
@@ -44,18 +44,33 @@ public class PostgreSqlRepository<T> : IGenericRepository<T> where T : class
     {
         var entity = await GetByIdAsync(id);
         if (entity != null)
-            await DeleteAsync(entity);
+            await UpdateAsync(entity);
     }
     
     public async Task UpdateAsync(T entity)
     {
         _dbSet.Update(entity);
-        await _dbContext.SaveChangesAsync();
+        await SaveChangesTransactionalAsync();
     }
 
     public async Task DeleteAsync(T entity)
     {
         _dbSet.Remove(entity);
-        await _dbContext.SaveChangesAsync();
+        await SaveChangesTransactionalAsync();
+    }
+    
+    public async Task SaveChangesTransactionalAsync()
+    {
+        using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 }

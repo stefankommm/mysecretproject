@@ -13,7 +13,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Signee.Domain\Signee.Domain.csproj" />
-      <ProjectReference Include="..\Signee.Infrastructure.PostgreSql\Signee.Infrastructure.PostgreSql.csproj" />
+      <ProjectReference Include="..\Signee.Infrastructure\Signee.Infrastructure.csproj" />
+      <ProjectReference Include="..\Signee.Resources\Signee.Resources.csproj" />
     </ItemGroup>
 
 </Project>

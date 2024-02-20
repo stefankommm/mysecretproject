@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Signee.Domain.Entities.Display;
 using Signee.Domain.Identity;
 
-namespace Signee.Infrastructure.PostgreSql.Data;
+namespace Signee.Infrastructure.PostgreSql;
 
 public class ApplicationDbContext : IdentityUserContext<ApplicationUser>
 {

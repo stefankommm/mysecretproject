@@ -8,7 +8,7 @@ public class Display
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string? Id { get; set; }
+    public string? Id { get; set; } // "www.nasastranka.com/display/Id=123"
     
     [MaxLength(20, ErrorMessage = "The Name field cannot exceed 20 characters.")]
     public string? Name { get; set; } = string.Empty;
@@ -17,7 +17,9 @@ public class Display
     
     public int? PairingCode { get; set; }
     
-    public Content? Content { get; set; }
+    //public View? Content { get; set; }
+    
+    public string? ImgUrl { get; set; } // TEMPORARY SOLUTION FOR MVP
     
     // TODO uncomment when userRepository/Service is ready
     // [ForeignKey("CreatedBy")]
