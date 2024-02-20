@@ -29,11 +29,11 @@ builder.Services.AddEndpointsApiExplorer();
 // Add swagger for documenting API on dev environment
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Test API", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Signee ManagerWeb API", Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
+        Description = "Please enter a valid JWT token",
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
