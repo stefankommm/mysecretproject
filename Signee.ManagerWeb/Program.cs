@@ -200,7 +200,7 @@ using (var serviceScope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || environmentName.Equals("Testing"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
