@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Signee.Domain.Entities.Display;
 using Signee.ManagerWeb.Models.Display;
 using Signee.Services.Areas.Display.Contracts;
-using Signee.Resources;
 using Signee.Resources.Resources;
 
 namespace Signee.ManagerWeb.Controllers;
@@ -16,11 +15,11 @@ public class DisplayController : ControllerBase
 {
     private readonly IDisplayService _displayService;
 
-    public DisplayController(ILogger<DisplayController> logger, IDisplayService displayService)
+    public DisplayController(IDisplayService displayService)
     {
         _displayService = displayService;
     }
-    
+
     [Authorize (Roles = "Admin, User")]
     [HttpPost("createDisplay")]
     public async Task<ActionResult<Display>> CreateDisplay([FromBody]CreateDisplayApi requestCreateDisplay)
@@ -37,7 +36,7 @@ public class DisplayController : ControllerBase
                 Name = requestCreateDisplay.Name,
                 ImgUrl = requestCreateDisplay.ImgUrl
             };
-
+            
             await _displayService.AddAsync(display);
             return CreatedAtAction(nameof(GetDisplay), new { id = display.Id }, display);
         }

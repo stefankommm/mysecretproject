@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  manager-be:
+    build:
+      context: .
+      dockerfile: ./Signee.ManagerWeb/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    expose:
+      - 8080
+    depends_on:
+      - postgres-db
+    environment:
+      CONNECTION_STRING: "Host=postgres-db;Port=5432;Database=postgres;Username=admin;Password=admin"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      PORT: 8080
+    networks:
+      - signee-virtual-network
+
+  postgres-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    expose:
+      - 5432
+    networks:
+      - signee-virtual-network
+
+networks:
+  signee-virtual-network:
+    driver: bridge
+

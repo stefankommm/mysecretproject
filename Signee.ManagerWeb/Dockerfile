@@ -7,7 +7,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Signee.ManagerWeb/Signee.ManagerWeb.csproj", "Signee.ManagerWeb/"]
+COPY ["Signee.ManagerWeb/Signee.ManagerWeb.csproj", "./Signee.ManagerWeb/"]
 RUN dotnet restore "Signee.ManagerWeb/Signee.ManagerWeb.csproj"
 COPY . .
 WORKDIR "/src/Signee.ManagerWeb"

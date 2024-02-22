@@ -1,12 +1,14 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Polly;
 using Signee.Domain.Identity;
 using Signee.Domain.RepositoryContracts.Areas.Display;
 using Signee.Domain.RepositoryContracts.Areas.User;
@@ -22,9 +24,21 @@ using Signee.Services.Areas.User.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var environmentName = Regex.Match(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? string.Empty, "^([^\\.]*)\\.?(.*)?$").ToString();
+
+if (!string.IsNullOrEmpty(environmentName))
+    builder.Configuration.AddJsonFile($"appsettings.{environmentName}.json", optional: true);
+
 // Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// Configure Kestrel (web server) to listen on all interfaces with the specified port
+var port = Environment.GetEnvironmentVariable("PORT") ?? builder.Configuration.GetValue<string>("WebServerSettings:ApplicationPort");
+builder.WebHost.ConfigureKestrel(options => 
+{
+    options.Listen(System.Net.IPAddress.Any, int.Parse(port ?? "5140"));
+});
 
 // Add swagger for documenting API on dev environment
 builder.Services.AddSwaggerGen(option =>
@@ -60,10 +74,23 @@ builder.Services.AddProblemDetails();
 builder.Services.AddApiVersioning();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-// Add DB Context (connection)
-var dbConnectionString = builder.Configuration.GetValue<string>("ConnectionStrings:PostgreSql");
-builder.Services.AddDbContext<ApplicationDbContext>(opt =>
-    opt.UseNpgsql(dbConnectionString));
+// Configure retry policy for retrying (if cannot connect to DB)
+var dbContextRetryPolicy = Policy
+    .Handle<Npgsql.NpgsqlException>()
+    .Or<System.Net.Sockets.SocketException>()
+    .WaitAndRetry(3, retryAttempt => TimeSpan.FromSeconds(5));
+
+// Add DB Context (connection) and retry up to 3 times if cannot connect
+builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+{
+    dbContextRetryPolicy.Execute(() =>
+    {
+        var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") 
+                               ?? builder.Configuration.GetValue<string>("ConnectionStrings:PostgreSql");
+        options.UseNpgsql(connectionString);
+        options.UseApplicationServiceProvider(serviceProvider);
+    });
+});
 
 // Register services for Dependency Injection
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -182,6 +209,8 @@ if (app.Environment.IsDevelopment())
 app.UseRequestLocalization(requestLocalizationOptions);
 app.UseHttpsRedirection();
 app.UseStatusCodePages();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

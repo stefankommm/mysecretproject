@@ -43,7 +43,7 @@ public sealed class DisplayMessageHub : Hub<IDisplayMessageClient>
     {
         await base.OnConnectedAsync();
         
-        var displayIdHttpContext = Context.GetHttpContext()?.Request.Query["displayId"];
+        var displayIdHttpContext = Context.GetHttpContext()?.Request.Query["id"];
         if (displayIdHttpContext is null)
             throw new ArgumentNullException();
 
