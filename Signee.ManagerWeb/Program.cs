@@ -11,14 +11,18 @@ using Microsoft.OpenApi.Models;
 using Polly;
 using Signee.Domain.Identity;
 using Signee.Domain.RepositoryContracts.Areas.Display;
+using Signee.Domain.RepositoryContracts.Areas.Group;
 using Signee.Domain.RepositoryContracts.Areas.User;
 using Signee.Infrastructure.PostgreSql;
 using Signee.Infrastructure.PostgreSql.Areas.Display;
+using Signee.Infrastructure.PostgreSql.Areas.Group;
 using Signee.Infrastructure.PostgreSql.Areas.User;
 using Signee.Services.Areas.Auth.Contracts;
 using Signee.Services.Areas.Auth.Services;
 using Signee.Services.Areas.Display.Contracts;
 using Signee.Services.Areas.Display.Services;
+using Signee.Services.Areas.Group.Contracts;
+using Signee.Services.Areas.Group.Services;
 using Signee.Services.Areas.User.Contracts;
 using Signee.Services.Areas.User.Services;
 
@@ -99,6 +103,10 @@ builder.Services.AddScoped<IUserService>(s => new UserService(s.GetRequiredServi
 builder.Services.AddScoped<IAuthService>(s => new AuthService(s.GetRequiredService<IUserService>(), s.GetRequiredService<ITokenService>(), s.GetRequiredService<ILogger<AuthService>>()));
 builder.Services.AddScoped<IDisplayRepository>(s => new DisplayRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>()));
+builder.Services.AddScoped<IGroupRepository>(s => new GroupRepository(s.GetRequiredService<ApplicationDbContext>()));
+builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IGroupRepository>()));
+
+
 
 // Support string to enum conversions in the API
 builder.Services.AddControllers().AddJsonOptions(opt =>

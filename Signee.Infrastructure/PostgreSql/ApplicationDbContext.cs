@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Signee.Domain.Entities.Display;
+using Signee.Domain.Entities.Group;
+using Signee.Domain.Entities.Widget;
 using Signee.Domain.Identity;
 
 namespace Signee.Infrastructure.PostgreSql;
@@ -8,6 +10,11 @@ namespace Signee.Infrastructure.PostgreSql;
 public class ApplicationDbContext : IdentityUserContext<ApplicationUser>
 {
     public DbSet<Display> Displays => Set<Display>();
+    public DbSet<Group> Groups => Set<Group>();
+    public DbSet<View> Views => Set<View>();
+    public DbSet<Widget> Widgets => Set<Widget>();
+    public DbSet<WidgetSettings> WidgetSettings => Set<WidgetSettings>();
+    
         
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options)
         : base(options)

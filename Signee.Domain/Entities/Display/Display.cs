@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Signee.Domain.Identity;
 
 namespace Signee.Domain.Entities.Display;
-    
+using Group = Group.Group;
 public class Display 
 {
     [Key]
@@ -16,15 +16,9 @@ public class Display
     public string? Url { get; set; } = string.Empty;
     
     public int? PairingCode { get; set; }
-    
-    //public View? Content { get; set; }
-    
     public string? ImgUrl { get; set; } // TEMPORARY SOLUTION FOR MVP
-    
-    // TODO uncomment when userRepository/Service is ready
-    // [ForeignKey("CreatedBy")]
-    // public string CreatedById { get; set; } = string.Empty;
-    // public ApplicationUser CreatedBy { get; set; }
-}
 
-// Display (ULR) <- Content (from-to) <- IEnumerable<Widget> (Layout)
+    public Group Group { get; set; }
+    public string? GroupId { get; set; }
+
+}
