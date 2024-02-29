@@ -13,10 +13,12 @@ using Signee.Domain.Identity;
 using Signee.Domain.RepositoryContracts.Areas.Display;
 using Signee.Domain.RepositoryContracts.Areas.Group;
 using Signee.Domain.RepositoryContracts.Areas.User;
+using Signee.Domain.RepositoryContracts.Areas.View;
 using Signee.Infrastructure.PostgreSql;
 using Signee.Infrastructure.PostgreSql.Areas.Display;
 using Signee.Infrastructure.PostgreSql.Areas.Group;
 using Signee.Infrastructure.PostgreSql.Areas.User;
+using Signee.Infrastructure.PostgreSql.Areas.View;
 using Signee.Services.Areas.Auth.Contracts;
 using Signee.Services.Areas.Auth.Services;
 using Signee.Services.Areas.Display.Contracts;
@@ -25,6 +27,8 @@ using Signee.Services.Areas.Group.Contracts;
 using Signee.Services.Areas.Group.Services;
 using Signee.Services.Areas.User.Contracts;
 using Signee.Services.Areas.User.Services;
+using Signee.Services.Areas.View.Contracts;
+using Signee.Services.Areas.View.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,6 +109,8 @@ builder.Services.AddScoped<IDisplayRepository>(s => new DisplayRepository(s.GetR
 builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>()));
 builder.Services.AddScoped<IGroupRepository>(s => new GroupRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IGroupRepository>()));
+builder.Services.AddScoped<IViewRepository>(s => new ViewRepository(s.GetRequiredService<ApplicationDbContext>()));
+builder.Services.AddScoped<IViewService>(s => new ViewService(s.GetRequiredService<IViewRepository>()));
 
 
 

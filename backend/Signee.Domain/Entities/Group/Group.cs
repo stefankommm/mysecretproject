@@ -5,7 +5,7 @@ using Signee.Domain.Identity;
 
 namespace Signee.Domain.Entities.Group;
 using Display = Signee.Domain.Entities.Display.Display;
-using View = Signee.Domain.Entities.Display.View;
+using View = Signee.Domain.Entities.View.View;
 
 public class Group
 {
