@@ -6,7 +6,7 @@ using Signee.Domain.Entities.Widget;
 using Signee.Domain.Identity;
 
 namespace Signee.Infrastructure.PostgreSql;
-
+using View = Domain.Entities.View.View;
 public class ApplicationDbContext : IdentityUserContext<ApplicationUser>
 {
     public DbSet<Display> Displays => Set<Display>();

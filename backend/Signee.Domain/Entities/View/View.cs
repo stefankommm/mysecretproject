@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Signee.Domain.Entities.Display;
+namespace Signee.Domain.Entities.View;
 using Domain.Entities.Widget;
 using Group = Signee.Domain.Entities.Group.Group;
 
