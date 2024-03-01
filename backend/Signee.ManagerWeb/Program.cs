@@ -108,7 +108,7 @@ builder.Services.AddScoped<IAuthService>(s => new AuthService(s.GetRequiredServi
 builder.Services.AddScoped<IDisplayRepository>(s => new DisplayRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>()));
 builder.Services.AddScoped<IGroupRepository>(s => new GroupRepository(s.GetRequiredService<ApplicationDbContext>()));
-builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IGroupRepository>()));
+builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IGroupRepository>(), s.GetRequiredService<IDisplayRepository>()));
 builder.Services.AddScoped<IViewRepository>(s => new ViewRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IViewService>(s => new ViewService(s.GetRequiredService<IViewRepository>()));
 

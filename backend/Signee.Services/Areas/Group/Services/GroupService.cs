@@ -18,18 +18,6 @@ public class GroupService : IGroupService
     public async Task<IEnumerable<Group>> GetAllGroups()
     {
         var all = await _groupRepository.GetAll();
-        // var toBeReturned = new List<Group>();
-        // foreach (var group in all)
-        // {
-        //     var displays = await _displayRepository.GetByGroupId(group.Id!);
-        //     toBeReturned.Add(new Group()
-        //     {
-        //         Id = group.Id,
-        //         Name = group.Name,
-        //         Displays = displays.ToList(),
-        //         Views = group.Views
-        //     });
-        // }
         return all;
     }
 

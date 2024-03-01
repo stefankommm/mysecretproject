@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Signee.Domain.Entities.Display;
 using Signee.Domain.Entities.Group;
+using Signee.Domain.Entities.View;
 using Signee.ManagerWeb.Models.Display;
 using Signee.ManagerWeb.Models.Group;
 using Signee.Services.Areas.Display.Contracts;
