@@ -15,5 +15,5 @@ public class View
     public string? GroupId { get; set; }
     public Group? Group { get; set; }
     
-    public ICollection<Widget>? Widgets { get; set; } = new List<Widget>();
+    public ICollection<Widget> Widgets { get; set; } = new List<Widget>();
 }

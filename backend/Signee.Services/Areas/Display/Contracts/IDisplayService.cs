@@ -29,6 +29,9 @@ public interface IDisplayService
     /// <param name="id">The identifier of the display to update.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     Task UpdateByIdAsync(string id);
+    
+    
+    Task UpdateAsync(Display display);
 
     /// <summary>
     /// Deletes a display by its identifier asynchronously.

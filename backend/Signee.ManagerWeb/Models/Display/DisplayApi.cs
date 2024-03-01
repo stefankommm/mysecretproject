@@ -4,12 +4,12 @@ namespace Signee.ManagerWeb.Models.Display;
 
 public class DisplayApi
 {
-    public string Id { get; set; } = string.Empty;
-    public string? Name { get; set; }
-    public string? Url { get; set; }
+    public string? Id { get; set; } // "www.nasastranka.com/display/Id=123"
+    public string? Name { get; set; } = string.Empty;
+    
+    public string? Url { get; set; } = string.Empty;
+    
     public int? PairingCode { get; set; }
-    public View? Content { get; set; }
-
-    public string? CreatedByName { get; set; }
-    public string? ImgUrl { get; set; }
+    
+    public string? GroupId { get; set; }
 }

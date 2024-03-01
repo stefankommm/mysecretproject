@@ -16,9 +16,8 @@ public class Display
     public string? Url { get; set; } = string.Empty;
     
     public int? PairingCode { get; set; }
-    public string? ImgUrl { get; set; } // TEMPORARY SOLUTION FOR MVP
-
-    public Group Group { get; set; }
+    
+    public Group? Group { get; set; }
+    
     public string? GroupId { get; set; }
-
 }

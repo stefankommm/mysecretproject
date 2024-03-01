@@ -21,7 +21,7 @@ public class DisplayController : ControllerBase
     }
 
     [Authorize (Roles = "Admin, User")]
-    [HttpPost("createDisplay")]
+    [HttpPost("")]
     public async Task<ActionResult<Display>> CreateDisplay([FromBody]CreateDisplayApi requestCreateDisplay)
     {
         try
@@ -34,7 +34,6 @@ public class DisplayController : ControllerBase
             var display = new Display
             {
                 Name = requestCreateDisplay.Name,
-                ImgUrl = requestCreateDisplay.ImgUrl
             };
             
             await _displayService.AddAsync(display);
@@ -48,8 +47,8 @@ public class DisplayController : ControllerBase
     }
     
     [Authorize (Roles = "Admin, User")]
-    [HttpGet("id")]
-    public async Task<ActionResult<DisplayApi>> GetDisplay([FromQuery(Name = "id")] string id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<DisplayApi>> GetDisplay(string id)
     {
         try
         {
@@ -73,24 +72,23 @@ public class DisplayController : ControllerBase
     }
     
     [Authorize (Roles = "Admin, User")]
-    [HttpGet("all")]
+    [HttpGet("")]
     public async Task<ActionResult<IEnumerable<DisplayApi>>> GetAllDisplays()
     {
         try
         {
             var displays = await _displayService.GetAllAsync();
-        
             var displaysApi = new List<DisplayApi>();
-        
             foreach (var display in displays)
             {
                 var displayApi = new DisplayApi
                 {
                     Id = display.Id,
                     Name = display.Name,
-                    ImgUrl = display.ImgUrl
+                    Url = display.Url,
+                    PairingCode = display.PairingCode,
+                    GroupId = display.GroupId
                 };
-            
                 displaysApi.Add(displayApi);
             }
         

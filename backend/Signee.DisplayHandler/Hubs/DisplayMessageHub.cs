@@ -57,7 +57,7 @@ public sealed class DisplayMessageHub : Hub<IDisplayMessageClient>
         
         // Send display URL to client
         var display = await _displayService.GetByIdAsync(displayId);
-        await Clients.Client(Context.ConnectionId).ReceiveMessage(display?.ImgUrl ?? string.Empty);
+        // await Clients.Client(Context.ConnectionId).ReceiveMessage(display?.ImgUrl ?? string.Empty);
     }
     
     public override Task OnDisconnectedAsync(Exception? exception)

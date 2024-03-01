@@ -25,12 +25,13 @@ public class ApplicationDbContext : IdentityUserContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        // Configure one-to-many relationship between ApplicationUser and Display
-        // modelBuilder.Entity<ApplicationUser>()
-        //     .HasMany(user => user.CreatedDisplays) 
-        //     .WithOne(display => display.CreatedBy)
-        //     .HasForeignKey(display => display.CreatedById)
+        
+        // modelBuilder.Entity<Group>()
+        //     .HasMany(g => g.Displays)
+        //     .WithOne(d => d.Group)
         //     .IsRequired();
+
+        modelBuilder.Entity<Group>().Navigation(g => g.Displays).AutoInclude();
+       
     }
 }

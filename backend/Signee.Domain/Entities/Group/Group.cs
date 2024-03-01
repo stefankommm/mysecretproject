@@ -14,9 +14,8 @@ public class Group
     public string? Id{ get; set; }
     
     public string? Name { get; set; }
+    public ICollection<Display> Displays { get; set; } = new List<Display>();
+    public ICollection<View> Views { get; set; } = new List<View>();
 
-    public bool? IsGroup => Displays?.Count > 1; // The Group is treated as a SingleDisplay if it contains one Display
-    public ICollection<Display>? Displays { get; set; }  = new List<Display>();
     
-    public ICollection<View>? Views { get; set; }  = new List<View>();
 }
