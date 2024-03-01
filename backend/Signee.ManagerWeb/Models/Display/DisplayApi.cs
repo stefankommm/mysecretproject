@@ -1,7 +1,7 @@
 ﻿using Signee.Domain.Entities.Display;
 
 namespace Signee.ManagerWeb.Models.Display;
-
+using View = Domain.Entities.View.View;
 public class DisplayApi
 {
     public string? Id { get; set; } // "www.nasastranka.com/display/Id=123"
