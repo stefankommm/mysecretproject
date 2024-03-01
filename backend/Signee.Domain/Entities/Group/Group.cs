@@ -16,6 +16,4 @@ public class Group
     public string? Name { get; set; }
     public ICollection<Display> Displays { get; set; } = new List<Display>();
     public ICollection<View> Views { get; set; } = new List<View>();
-
-    
 }

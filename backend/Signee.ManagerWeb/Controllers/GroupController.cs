@@ -34,7 +34,7 @@ public class GroupController : ControllerBase
     {
         try
         {
-            var groups = await _groupService.GetAllGroups();
+            var groups = await _groupService.GetAll();
         
             var groupDtos = groups.Select(group => new GroupDto
             {
@@ -75,7 +75,7 @@ public class GroupController : ControllerBase
     {
         try
         {
-            var group = await _groupService.GetGroupById(id);
+            var group = await _groupService.GetById(id);
             if (group == null)
                 return NotFound();
 
@@ -104,7 +104,7 @@ public class GroupController : ControllerBase
             };
 
             // Add the group to the database
-            await _groupService.AddToGroup(group);
+            await _groupService.Add(group);
 
             // Retrieve the ID from the added group
             var groupId = group.Id;
@@ -133,12 +133,12 @@ public class GroupController : ControllerBase
     {
         try
         {
-            var group = await _groupService.GetGroupById(id);
+            var group = await _groupService.GetById(id);
             if (group == null)
                 return NotFound();
 
             group.Name = requestUpdateGroup.Name;
-            await _groupService.UpdateGroup(group);
+            await _groupService.Update(group);
             return NoContent();
         }
         catch (Exception ex)
@@ -152,7 +152,7 @@ public class GroupController : ControllerBase
     {
         try
         {
-            var group = await _groupService.GetGroupById(id);
+            var group = await _groupService.GetById(id);
             if (group == null)
                 return NotFound();
 
