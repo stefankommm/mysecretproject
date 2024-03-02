@@ -1,4 +1,5 @@
 ﻿namespace Signee.Services.Areas.Display.Contracts;
+
 using Display = Domain.Entities.Display.Display;
 
 public interface IDisplayService
@@ -23,14 +24,6 @@ public interface IDisplayService
     /// <returns>A task representing the asynchronous operation.</returns>
     Task AddAsync(Display display);
 
-    /// <summary>
-    /// Updates a display by its identifier asynchronously.
-    /// </summary>
-    /// <param name="id">The identifier of the display to update.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    Task UpdateByIdAsync(string id);
-    
-    
     Task UpdateAsync(Display display);
 
     /// <summary>

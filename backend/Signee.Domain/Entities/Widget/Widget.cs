@@ -14,6 +14,5 @@ public class Widget
     public string Type { get; set; }
     public View View { get; set; }
     public string? ViewId { get; set; }
-    
     public ICollection<WidgetSettings>? WidgetSettings { get; set; } = new List<WidgetSettings>();
 }

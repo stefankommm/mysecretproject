@@ -8,6 +8,10 @@ namespace Signee.Domain.RepositoryContracts.Areas.User;
 /// </summary>
 public interface IUserRepository
 {
+
+    Task Update(ApplicationUser user);
+    
+    Task<ApplicationUser?> GetUserByIdAsync(string id);
     /// <summary>
     /// Finds a user by their email address.
     /// </summary>

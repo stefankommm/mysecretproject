@@ -13,8 +13,6 @@ public class Display
     [MaxLength(20, ErrorMessage = "The Name field cannot exceed 20 characters.")]
     public string? Name { get; set; } = string.Empty;
     
-    public string? Url { get; set; } = string.Empty;
-    
     public int? PairingCode { get; set; }
     
     public Group? Group { get; set; }

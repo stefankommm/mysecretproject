@@ -85,7 +85,6 @@ public class DisplayController : ControllerBase
                 {
                     Id = display.Id,
                     Name = display.Name,
-                    Url = display.Url,
                     PairingCode = display.PairingCode,
                     GroupId = display.GroupId
                 };

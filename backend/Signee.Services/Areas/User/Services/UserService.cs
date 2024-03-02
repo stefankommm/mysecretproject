@@ -18,7 +18,10 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<ApplicationUser?> FindByEmailAsync(string email) => await _userRepository.FindByEmailAsync(email);
+    public async Task<ApplicationUser?> FindByEmailAsync(string email)
+    {
+        return await _userRepository.FindByEmailAsync(email);
+    }
 
     public async Task<bool> IsEmailUniqueAsync(string email)
     {
@@ -26,10 +29,16 @@ public class UserService : IUserService
         return existingUser == null;
     }
 
-    public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password) => await _userRepository.CreateUserAsync(user, password);
-    
-    public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password) => await _userRepository.CheckPasswordAsync(user, password);
-    
+    public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password)
+    {
+        return await _userRepository.CreateUserAsync(user, password);
+    }
+
+    public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
+    {
+        return await _userRepository.CheckPasswordAsync(user, password);
+    }
+
     public async Task EnsureAdminUserCreatedAsync(string adminEmail, string adminPassword)
     {
         var adminUser = await _userRepository.FindByEmailAsync(adminEmail);

@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Signee.Domain.Entities.Display;
 using Signee.Domain.Entities.Group;
@@ -28,7 +30,7 @@ public class GroupController : ControllerBase
     }
     
     
-    
+    [Authorize(Roles = "Admin, User")]
     [HttpGet("")]
     public async Task<ActionResult<IEnumerable<GroupDto>>> GetAllGroups()
     {
@@ -44,24 +46,12 @@ public class GroupController : ControllerBase
                 {
                     Id = d.Id,
                     Name = d.Name,
-                    Url = d.Url,
                     PairingCode = d.PairingCode,
                     GroupId = d.GroupId
                 }).ToList(),      
                 Views = group.Views!.Select(v => v.Id).ToList()
             }).ToList();
-
-            // Debug: Print display information for each group to the console
-            foreach (var groupDto in groupDtos)
-            {
-                Console.WriteLine($"Group ID: {groupDto.Id}, Name: {groupDto.Name}");
-                Console.WriteLine("Displays:");
-                foreach (var display in groupDto.Displays)
-                {
-                    Console.WriteLine($"Display ID: {display.Id}, Name: {display.Name}");
-                }
-            }
-
+            
             return Ok(groupDtos);
         }
         catch (Exception ex)
@@ -70,6 +60,7 @@ public class GroupController : ControllerBase
         }
     }
     
+    [Authorize(Roles = "Admin, User")]
     [HttpGet("{id}")]
     public async Task<ActionResult<Group>> GetGroupById(string id)
     {
@@ -87,7 +78,7 @@ public class GroupController : ControllerBase
         }
     }
     
-    
+    [Authorize(Roles = "Admin, User")]
     [HttpPost("")]
     public async Task<ActionResult<GroupDto>> CreateGroup([FromBody] CreateGroupApi requestCreateGroup)
     {
@@ -96,28 +87,30 @@ public class GroupController : ControllerBase
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // Extract UserID from the claim we provided user to create JWT Token
+            ClaimsPrincipal currentUser = this.User;
+            var authorizedUser = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            
             var group = new Group
             {
                 Name = requestCreateGroup.Name,
                 Displays = new List<Display>(),
                 Views = new List<View>(),
+                UserId = authorizedUser
             };
 
             // Add the group to the database
-            await _groupService.Add(group);
-
-            // Retrieve the ID from the added group
-            var groupId = group.Id;
-
+            await _groupService.Add(group, authorizedUser);
+            
             // Construct a DTO for the created group
             var groupDto = new GroupDto
             {
-                Id = groupId,
-                Name = requestCreateGroup.Name,
-                Displays = new List<DisplayApi>(), // Initialize as empty list
-                Views = new List<string>()     // Initialize as empty list
+                Id = group.Id!,
+                Name = requestCreateGroup.Name!,
+                Displays = new List<DisplayApi>(),
+                Views = new List<string>()     
             };
-
+            
             return Ok(groupDto);
         }
         catch (Exception ex)
@@ -127,7 +120,7 @@ public class GroupController : ControllerBase
     }
 
    
-
+    [Authorize(Roles = "Admin, User")]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateGroup(string id, [FromBody] UpdateGroupApi requestUpdateGroup)
     {
@@ -146,7 +139,8 @@ public class GroupController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
-
+    
+    [Authorize(Roles = "Admin, User")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteGroup(string id)
     {
@@ -164,14 +158,14 @@ public class GroupController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
-
+    
+    [Authorize(Roles = "Admin, User")]
     [HttpPost("{groupId}/display/{displayId}")]
     public async Task<IActionResult> AddDisplayToGroup(string groupId, string displayId)
     {
         try
         {
             await _groupService.AddDisplayToGroup(groupId, displayId);
-            
             return Ok();
         }
         catch (Exception ex)
@@ -180,12 +174,13 @@ public class GroupController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Admin, User")]
     [HttpDelete("{groupId}/display/{displayId}")]
     public async Task<IActionResult> RemoveDisplayFromGroup(string groupId, string displayId)
     {
         try
         {
-            // Logic to remove display from group
+            await _groupService.DeleteDisplayFromGroup(groupId, displayId);
             return Ok();
         }
         catch (Exception ex)

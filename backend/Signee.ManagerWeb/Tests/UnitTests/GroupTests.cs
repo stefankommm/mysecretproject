@@ -7,9 +7,9 @@ using NUnit.Framework.Legacy;
 using Signee.Domain.Entities.Display;
 using Signee.Domain.Entities.Group;
 using Signee.Services.Areas.Group.Services;
-using Signee.Services.Areas.Display.Services;
 using Signee.Domain.RepositoryContracts.Areas.Group;
 using Signee.Domain.RepositoryContracts.Areas.Display;
+using Signee.Domain.RepositoryContracts.Areas.User;
 using Signee.Domain.RepositoryContracts.Areas.View;
 
 namespace Signee.ManagerWeb.Tests.UnitTests;
@@ -23,11 +23,12 @@ public class GroupTests
         public async Task AddDisplayToGroup_CorrectlyAddsDisplay()
         {
             // Arrange
+            var userRepositortyMock = new Mock<IUserRepository>();
             var groupRepositoryMock = new Mock<IGroupRepository>();
             var displayRepositoryMock = new Mock<IDisplayRepository>();
             var viewRepositoryMock = new Mock<IViewRepository>();
 
-            var groupService = new GroupService(groupRepositoryMock.Object, displayRepositoryMock.Object, viewRepositoryMock.Object);
+            var groupService = new GroupService(userRepositortyMock.Object, groupRepositoryMock.Object, displayRepositoryMock.Object, viewRepositoryMock.Object);
 
             var groupId = "your-group-id";
             var displayId = "your-display-id";

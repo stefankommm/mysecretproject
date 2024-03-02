@@ -13,6 +13,16 @@ public class UserRepository : IUserRepository
         _userManager = userManager;
     }
 
+    public Task Update(ApplicationUser user)
+    {
+        return _userManager.UpdateAsync(user);
+    }
+
+    public async Task<ApplicationUser?> GetUserByIdAsync(string id)
+    {
+        return await _userManager.FindByIdAsync(id);
+    }
+
     public async Task<ApplicationUser?> FindByEmailAsync(string email)
     {
         return await _userManager.FindByEmailAsync(email);

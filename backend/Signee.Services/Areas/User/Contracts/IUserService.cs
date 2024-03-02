@@ -38,7 +38,6 @@ public interface IUserService
     /// <returns>A task that represents the asynchronous operation. The task result indicates whether the password is valid for the user.</returns>
     Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
 
-    
     /// <summary>
     /// Ensures that an admin user exists in the system. If no admin user with the provided email exists, 
     /// one will be created using the specified email and password.
@@ -49,4 +48,5 @@ public interface IUserService
     /// <remarks>
     /// If an admin user with the provided email already exists, this method does nothing.
     /// </remarks>
-    Task EnsureAdminUserCreatedAsync(string adminEmail, string adminPassword);}
+    Task EnsureAdminUserCreatedAsync(string adminEmail, string adminPassword);
+}

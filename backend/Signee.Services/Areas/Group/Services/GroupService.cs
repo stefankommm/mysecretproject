@@ -1,5 +1,6 @@
 using Signee.Domain.RepositoryContracts.Areas.Display;
 using Signee.Domain.RepositoryContracts.Areas.Group;
+using Signee.Domain.RepositoryContracts.Areas.User;
 using Signee.Domain.RepositoryContracts.Areas.View;
 using Signee.Services.Areas.Group.Contracts;
 
@@ -8,12 +9,14 @@ using Group = Domain.Entities.Group.Group;
 using View = Domain.Entities.View.View;
 public class GroupService : IGroupService
 {
+    private readonly IUserRepository _userRepository;
     private readonly IGroupRepository _groupRepository;
     private readonly IDisplayRepository _displayRepository;
     private readonly IViewRepository _viewRepository;
     
-    public GroupService(IGroupRepository groupRepository, IDisplayRepository displayRepository, IViewRepository viewRepository)
+    public GroupService(IUserRepository userRepostory ,IGroupRepository groupRepository, IDisplayRepository displayRepository, IViewRepository viewRepository)
     {
+        _userRepository = userRepostory;
         _groupRepository = groupRepository;
         _displayRepository = displayRepository;
         _viewRepository = viewRepository;
@@ -28,18 +31,10 @@ public class GroupService : IGroupService
     public async Task<Group?> GetById(string id)
     {
         var group = await _groupRepository.GetById(id);
-        var displays = await _displayRepository.GetByGroupId(id);
-        
-        var result = new Group()
-        {
-            Id = group.Id,
-            Name = group.Name,
-            Displays = displays.ToList(),
-            Views = group.Views
-        };
-        
-        
-        throw new NotImplementedException();
+        if (group == null)
+            throw new Exception("Group not found");
+
+        return group;
     }
     
     public async Task<IEnumerable<Group>> GetAllWithSingleDisplayAsync()
@@ -56,7 +51,7 @@ public class GroupService : IGroupService
 
     public async Task Update(Group g)
     {
-        Group group = await _groupRepository.GetById(g.Id);
+        var group = await _groupRepository.GetById(g.Id);
         if(group == null)
             throw new Exception("Group not found");
         await _groupRepository.UpdateAsync(group);
@@ -64,21 +59,32 @@ public class GroupService : IGroupService
 
     public async Task DeleteById(string id)
     {
-        Group group = await _groupRepository.GetById(id);
+        var group = await _groupRepository.GetById(id);
         if(group == null)
             throw new Exception("Group not found");
         await _groupRepository.DeleteAsync(group);
     }
 
-    public async Task Add(Group g)
+    public async Task Add(Group g, string userId)
     {
+        var user = await _userRepository.GetUserByIdAsync(userId);
+        if(user == null)
+            throw new Exception("User to attach display not found");
+        g.User = user;
+
         await _groupRepository.AddAsync(g);
     }
 
     // User
     public async Task<IEnumerable<Group>> GetByUserId(string userId)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetUserByIdAsync(userId);
+        if(user == null){
+            throw new Exception("Can't find user to find its groups");
+        }
+
+        var groups = await _groupRepository.FindAsync(g => g.UserId == userId);
+        return groups;
     }
 
     //Display
@@ -101,7 +107,7 @@ public class GroupService : IGroupService
         await _groupRepository.UpdateAsync(group);
     }
 
-    public async Task RemoveDisplayFromGroup(string groupId, string displayId)
+    public async Task DeleteDisplayFromGroup(string groupId, string displayId)
     {
         var display = await _displayRepository.GetByIdAsync(displayId);
         var group = await _groupRepository.GetByIdAsync(groupId);
@@ -127,7 +133,7 @@ public class GroupService : IGroupService
         group.Views.Add(view);
     }
 
-    public async Task RemoveViewFromGroup(string groupId, string viewId)
+    public async Task DeleteViewFromGroup(string groupId, string viewId)
     {
         var group = await _groupRepository.GetById(groupId);
         var view = await _viewRepository.GetById(viewId);
