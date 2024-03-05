@@ -1,0 +1,15 @@
+{
+    "auth": {
+        "login": "Login",
+        "register": "Register",
+        "registerAction": "Login",
+        "loginAction": "Register",
+        "userName": "Username",
+        "accountName": "Account Name",
+        "email": "Email address",
+        "password": "Password",
+        "termsAndConditions": "I accept <0>Terms of Service</0> and <1>Privacy Policy</1>.",
+        "emailValidation": "Please enter a valid email address.",
+        "termsValidation": "You must agree to the terms."
+    }
+}

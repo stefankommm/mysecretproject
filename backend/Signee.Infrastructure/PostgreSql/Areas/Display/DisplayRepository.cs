@@ -14,19 +14,13 @@ public class DisplayRepository : PostgreSqlRepository<Display>, IDisplayReposito
         _dbContext = dbContext;
     }
     
+    public async Task<IEnumerable<Display>> GetAllByGroupIdAsync(string groupId) 
+        => await FindAllAsync(display => display.GroupId == groupId);
+
+    public async Task<IEnumerable<Display>> GetAllByNameAsync(string name)
+        => await FindAllAsync(display => display.Name == name);
     
-    // TODO Add some specific methods for accessing display data in the future
-    public async Task<IEnumerable<Display>> GetByGroupId(string groupId)
-    {
-        return await _dbContext.Displays.Where(display => display.GroupId == groupId).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Display>> GetByName(string name)
-    {
-        return await _dbContext.Displays.Where(display => display.Name == name).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Display>> GetOwnedByUserId(string userId)
+    public async Task<IEnumerable<Display>> GetOwnedByUserIdAsync(string userId)
     {
         // var userGroups = await _dbContext.Groups
         //     .Where(group => group.CreatedById.Id == userId)

@@ -9,6 +9,13 @@ namespace Signee.Services.Areas.User.Contracts;
 public interface IUserService
 {
     /// <summary>
+    /// Checks if user with ID exists and if it does retrieves user
+    /// </summary>
+    /// <param name="id">user ID</param>
+    /// <returns>ApplicationUser with given ID</returns>
+    Task<ApplicationUser> GetByIdAsync(string id);
+    
+    /// <summary>
     /// Finds a user by their email address.
     /// </summary>
     /// <param name="email">The email address of the user to find.</param>
@@ -29,6 +36,13 @@ public interface IUserService
     /// <param name="password">The password for the new user.</param>
     /// <returns>An <see cref="IdentityResult"/> indicating whether the user creation was successful.</returns>
     Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password);
+
+    /// <summary>
+    /// Updates application user in DB
+    /// </summary>
+    /// <param name="user">ApplicationUser object to update</param>
+    /// <returns></returns>
+    Task UpdateAsync(ApplicationUser user);
 
     /// <summary>
     /// Checks if the specified password is valid for the given user.

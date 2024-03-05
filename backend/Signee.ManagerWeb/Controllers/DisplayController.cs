@@ -22,7 +22,7 @@ public class DisplayController : ControllerBase
 
     [Authorize (Roles = "Admin, User")]
     [HttpPost("")]
-    public async Task<ActionResult<Display>> CreateDisplay([FromBody]CreateDisplayApi requestCreateDisplay)
+    public async Task<ActionResult<Display>> CreateDisplay([FromBody]CreateDisplayApi request)
     {
         try
         {
@@ -31,11 +31,7 @@ public class DisplayController : ControllerBase
 
             // TODO add error to the service if we try to add display with name that already exists
 
-            var display = new Display
-            {
-                Name = requestCreateDisplay.Name,
-            };
-            
+            var display = CreateDisplayApi.ToDomainModel(request);
             await _displayService.AddAsync(display);
             return CreatedAtAction(nameof(GetDisplay), new { id = display.Id }, display);
         }
@@ -48,22 +44,13 @@ public class DisplayController : ControllerBase
     
     [Authorize (Roles = "Admin, User")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<DisplayApi>> GetDisplay(string id)
+    public async Task<ActionResult<DisplayResponseApi>> GetDisplay(string id)
     {
         try
         {
             var display = await _displayService.GetByIdAsync(id);
-
-            if (display == null)
-                return NotFound();
-        
-            var displayApi = new DisplayApi
-            {
-                Id = display.Id,
-                Name = display.Name
-            };
-
-            return Ok(displayApi);
+            var response = DisplayResponseApi.FromDomainModel(display);
+            return Ok(response);
         } catch (Exception ex)
         {
             // TODO log exception
@@ -73,25 +60,13 @@ public class DisplayController : ControllerBase
     
     [Authorize (Roles = "Admin, User")]
     [HttpGet("")]
-    public async Task<ActionResult<IEnumerable<DisplayApi>>> GetAllDisplays()
+    public async Task<ActionResult<IEnumerable<DisplayResponseApi>>> GetAllDisplays()
     {
         try
         {
             var displays = await _displayService.GetAllAsync();
-            var displaysApi = new List<DisplayApi>();
-            foreach (var display in displays)
-            {
-                var displayApi = new DisplayApi
-                {
-                    Id = display.Id,
-                    Name = display.Name,
-                    PairingCode = display.PairingCode,
-                    GroupId = display.GroupId
-                };
-                displaysApi.Add(displayApi);
-            }
-        
-            return Ok(displaysApi);
+            var response = displays.Select(d => DisplayResponseApi.FromDomainModel(d));
+            return Ok(response);
         }
         catch (Exception ex)
         {

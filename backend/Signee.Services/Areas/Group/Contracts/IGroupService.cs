@@ -1,38 +1,45 @@
 namespace Signee.Services.Areas.Group.Contracts;
-
-using Group = Domain.Entities.Group.Group;
+using Group =  Domain.Entities.Group.Group;
 using View = Domain.Entities.View.View;
 
 public interface IGroupService
 {
-    Task<IEnumerable<Group>> GetAll();
-
-    Task<Group?> GetById(string id);
-
+    
+    Task<IEnumerable<Group>> GetAllAsync();
+    
+    Task<Group> GetByIdAsync(string id);
+    
     Task<IEnumerable<Group>> GetAllWithSingleDisplayAsync();
 
     Task<IEnumerable<Group>> GetAllWithMultipleDisplaysAsync();
+    
+    Task AddAsync(Group g);
+    
+    Task UpdateAsync(Group g);
+    
+    Task DeleteByIdAsync(string id);
+    
+    /// ----- USER METHODS -----
+    
+    /// <param name="userId"></param>
+    /// <returns>All groups that belong to user with give ID</returns>
+    Task<IEnumerable<Group>> GetByUserIdAsync(string userId);
+    
+    /// <param name="displayId"></param>
+    /// <returns>All groups that contain display with given ID</returns>
+    Task<IEnumerable<Group>> GetByDisplayIdAsync(string displayId);
+    
+    /// ----- DISPLAY METHODS -----
 
-    Task Add(Group g, string userId);
-
-    Task Update(Group g);
-
-    Task DeleteById(string id);
-
-    // User methods
-    Task<IEnumerable<Group>> GetByUserId(string userId);
-
-    // Display methods
-    Task<IEnumerable<Group>> GetByDisplayId(string displayId);
-
-    Task AddDisplayToGroup(string groupId, string displayId);
-
-    Task DeleteDisplayFromGroup(string groupId, string displayId);
-
-    // View methods
-    Task AddViewToGroup(string groupId, string viewId);
-
-    Task DeleteViewFromGroup(string groupId, string viewId);
-
-    Task<View> GetCurrentView(string groupId);
+    Task AddDisplayToGroupAsync(string groupId, string displayId);
+    
+    Task RemoveDisplayFromGroupAsync(string groupId, string displayId);
+    
+    /// ----- VIEW METHODS -----
+     
+    Task AddViewToGroupAsync(string groupId, string viewId);
+    
+    Task RemoveViewFromGroupAsync(string groupId, string viewId);
+    
+    Task<View?> GetCurrentViewAsync(string groupId);
 }

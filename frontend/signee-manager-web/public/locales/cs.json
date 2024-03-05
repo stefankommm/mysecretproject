@@ -1,0 +1,15 @@
+{
+    "auth": {
+        "login": "Přihlášení",
+        "register": "Registrace",
+        "registerAction": "Registrovat se",
+        "loginAction": "Přihlásit se",
+        "userName": "Uživatelské jméno",
+        "accountName": "Název účtu",
+        "email": "Emailová adresa",
+        "password": "Heslo",
+        "termsAndConditions": "Souhlasím s <0>Obchodními podmínkami</0> a <1>Zásadami ochrany osobních údajů</1>.",
+        "emailValidation": "Zadejte platnou emailovou adresu",
+        "termsValidation": "Musíte souhlasit s obchodními podmínkami a zásadami ochrany osobních údajů"
+    }
+}  

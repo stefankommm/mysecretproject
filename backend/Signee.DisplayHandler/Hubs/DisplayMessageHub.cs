@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Signee.DisplayHandler.Hubs.Contracts;
 using Signee.Services.Areas.Display.Contracts;
 
-namespace Signee.DisplayHandler;
+namespace Signee.DisplayHandler.Hubs;
 
 public sealed class DisplayMessageHub : Hub<IDisplayMessageClient>
 {

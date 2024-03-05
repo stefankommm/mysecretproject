@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Signee.Domain.Entities.Display;
 
 namespace Signee.Domain.Entities.Widget;
 using View = Domain.Entities.View.View;
+
 public class Widget
 {
     [Key]

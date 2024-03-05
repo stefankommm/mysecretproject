@@ -3,13 +3,9 @@ using Signee.Domain.RepositoryContracts.Common;
 namespace Signee.Domain.RepositoryContracts.Areas.View;
 using View = Domain.Entities.View.View;
 
-public interface IViewRepository : IGenericRepository<Entities.View.View>
+public interface IViewRepository : IGenericRepository<View>
 {
-    Task <IEnumerable<View>> GetAll();
+    Task<View?> GetViewByTimeAsync(DateTime time);
     
-    Task<View?> GetById(string viewId);
-    
-    Task<View?> GetViewAtTime(DateTime time);
-    
-    Task<IEnumerable<View>>  GetAllByGroupId(string groupId);
+    Task<IEnumerable<View>> GetAllByGroupIdAsync(string groupId);
 }

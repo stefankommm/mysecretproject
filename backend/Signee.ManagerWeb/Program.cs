@@ -94,7 +94,7 @@ builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =
     dbContextRetryPolicy.Execute(() =>
     {
         var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") 
-                               ?? builder.Configuration.GetValue<string>("ConnectionStrings:PostgreSql");
+                               ?? builder.Configuration.GetConnectionString("PostgreSql");
         options.UseNpgsql(connectionString);
         options.UseApplicationServiceProvider(serviceProvider);
     });
@@ -108,11 +108,9 @@ builder.Services.AddScoped<IAuthService>(s => new AuthService(s.GetRequiredServi
 builder.Services.AddScoped<IDisplayRepository>(s => new DisplayRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>()));
 builder.Services.AddScoped<IGroupRepository>(s => new GroupRepository(s.GetRequiredService<ApplicationDbContext>()));
-builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IUserRepository>(),s.GetRequiredService<IGroupRepository>(), s.GetRequiredService<IDisplayRepository>(), s.GetRequiredService<IViewRepository>()));
+builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IUserService>(), s.GetRequiredService<IGroupRepository>(), s.GetRequiredService<IDisplayService>(), s.GetRequiredService<IViewService>()));
 builder.Services.AddScoped<IViewRepository>(s => new ViewRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IViewService>(s => new ViewService(s.GetRequiredService<IViewRepository>()));
-
-
 
 // Support string to enum conversions in the API
 builder.Services.AddControllers().AddJsonOptions(opt =>
@@ -168,6 +166,17 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+// Allow CORS for frontend (when running locally)
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        corsBuilder => corsBuilder.WithOrigins(allowedOrigins ?? ["http://localhost:3000"])
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
+
 // Retrieve default culture setting from appsettings.json
 var defaultCulture = builder.Configuration["CultureSettings:DefaultCulture"] ?? "sk";
 
@@ -221,7 +230,8 @@ if (app.Environment.IsDevelopment() || environmentName.Equals("Testing"))
 }
 
 app.UseRequestLocalization(requestLocalizationOptions);
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+app.UseCors("AllowSpecificOrigin");
 app.UseStatusCodePages();
 app.UseDefaultFiles();
 app.UseStaticFiles();

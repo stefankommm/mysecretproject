@@ -2,8 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Signee.Domain.Entities.View;
-using Domain.Entities.Widget;
-using Group = Signee.Domain.Entities.Group.Group;
+using Group;
+using Widget;
 
 public class View
 {

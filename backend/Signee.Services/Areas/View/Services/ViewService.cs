@@ -15,16 +15,27 @@ public class ViewService : IViewService
 
     public async Task<IEnumerable<View>> GetAllAsync() => await _viewRepository.GetAllAsync();
 
-    public async Task<View?> GetByIdAsync(string id) => await _viewRepository.GetByIdAsync(id);
+    public async Task<View> GetByIdAsync(string id)
+    {
+        var view = await _viewRepository.GetByIdAsync(id);
+        if (view == null)
+            throw new InvalidOperationException($"View with id: {id} not found!");
 
+        return view;
+    } 
+    
     public async Task AddAsync(View view) => await _viewRepository.AddAsync(view);
 
-    public async Task UpdateByIdAsync(string id) => await _viewRepository.UpdateByIdAsync(id);
+    public async Task UpdateAsync(View view) => await _viewRepository.UpdateAsync(view);
 
-    public async Task DeleteByIdAsync(string id) => await _viewRepository.DeleteByIdAsync(id);
+    public async Task DeleteByIdAsync(string id)
+    {
+        await GetByIdAsync(id); // Checks if view exists and if not throw exception
+        await _viewRepository.DeleteByIdAsync(id);
+    } 
 
-    public async Task<IEnumerable<View>> GetAllByGroupId(string groupId) =>
-        await _viewRepository.GetAllByGroupId(groupId);
+    public async Task<IEnumerable<View>> GetAllByGroupIdAsync(string groupId) 
+        => await _viewRepository.GetAllByGroupIdAsync(groupId);
 
-    public async Task GetViewAtTimeAsync(DateTime time) => await _viewRepository.GetViewAtTime(time);
+    public async Task GetViewByTimeAsync(DateTime time) => await _viewRepository.GetViewByTimeAsync(time);
 }

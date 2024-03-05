@@ -13,22 +13,18 @@ public class UserRepository : IUserRepository
         _userManager = userManager;
     }
 
-    public Task Update(ApplicationUser user)
-    {
-        return _userManager.UpdateAsync(user);
-    }
+    public async Task UpdateAsync(ApplicationUser user) =>
+        await _userManager.UpdateAsync(user);
 
-    public async Task<ApplicationUser?> GetUserByIdAsync(string id)
-    {
-        return await _userManager.FindByIdAsync(id);
-    }
+    public async Task<ApplicationUser?> GetByIdAsync(string id)
+        => await _userManager.FindByIdAsync(id);
 
     public async Task<ApplicationUser?> FindByEmailAsync(string email)
-    {
-        return await _userManager.FindByEmailAsync(email);
-    }
+        => await _userManager.FindByEmailAsync(email);
 
-    public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password) => await _userManager.CreateAsync(user, password);
+    public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password)
+        => await _userManager.CreateAsync(user, password);
 
-    public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password) => await _userManager.CheckPasswordAsync(user, password);
+    public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
+        => await _userManager.CheckPasswordAsync(user, password);
 }

@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Signee.Domain.Identity;
 
 namespace Signee.Domain.Entities.Display;
 using Group = Group.Group;
+
 public class Display 
 {
     [Key]

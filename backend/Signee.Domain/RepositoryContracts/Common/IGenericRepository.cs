@@ -15,11 +15,18 @@ public interface IGenericRepository<T> where T : class
     Task<IEnumerable<T>> GetAllAsync();
 
     /// <summary>
-    /// Retrieves entities of type <typeparamref name="T"/> that satisfy the specified predicate.
+    /// Retrieves all entities of type <typeparamref name="T"/> that satisfy the specified predicate.
     /// </summary>
     /// <param name="predicate">The predicate to filter entities.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains filtered entities.</returns>
-    Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+    Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate);
+    
+    /// <summary>
+    /// Retrieves first entity of type <typeparamref name="T"/> that satisfy the specified predicate.
+    /// </summary>
+    /// <param name="predicate">The predicate to search for entity.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains first matching.</returns>
+    Task<T?> FindAsync(Expression<Func<T, bool>> predicate);
 
     /// <summary>
     /// Retrieves the entity of type <typeparamref name="T"/> with the specified identifier.
@@ -27,6 +34,13 @@ public interface IGenericRepository<T> where T : class
     /// <param name="id">The identifier of the entity to retrieve.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the entity if found; otherwise, null.</returns>
     Task<T?> GetByIdAsync(object id);
+
+    /// <summary>
+    /// Retrieves multiple entities of type <typeparamref name="T"/> with the specified identifiers.
+    /// </summary>
+    /// <param name="ids">The identifiers of the entities to retrieve.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the collection of entities found. Null entities are filtered out.</returns>
+    Task<IEnumerable<T>> GetAllByIdAsync(IEnumerable<object> ids);
 
     /// <summary>
     /// Adds a new entity of type <typeparamref name="T"/>.
@@ -41,13 +55,6 @@ public interface IGenericRepository<T> where T : class
     /// <param name="entities">The collection of entities to add.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     Task AddRangeAsync(IEnumerable<T> entities);
-
-    /// <summary>
-    /// Updates the entity of type <typeparamref name="T"/> with the specified identifier.
-    /// </summary>
-    /// <param name="id">The identifier of the entity to update.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    Task UpdateByIdAsync(object id);
 
     /// <summary>
     /// Deletes the entity of type <typeparamref name="T"/> with the specified identifier.
