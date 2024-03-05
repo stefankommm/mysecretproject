@@ -1,0 +1,14 @@
+{
+  "name": "common",
+  "version": "0.1.0",
+  "dependencies": {
+    "axios": "^1.6.7"
+  },
+  "devDependencies": {
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "watch": "tsc-watch --onSuccess \"echo 'Compilation successful'\""
+  }
+}

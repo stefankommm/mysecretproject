@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Signee.Domain.Entities.View;
+using Signee.ManagerWeb.Models.Group;
 using Signee.ManagerWeb.Models.View;
 using Signee.Services.Areas.View.Contracts;
 
@@ -20,12 +21,13 @@ public class ViewController : ControllerBase
     }
     
     [HttpGet("")]
-    public async Task<ActionResult<IEnumerable<View>>> GetAllViews()
+    public async Task<ActionResult<IEnumerable<ViewResponseApi>>> GetAllViews()
     {
         try
         {
             var views = await _viewService.GetAllAsync();
-            return Ok(views);
+            var response = views.Select(v => ViewResponseApi.FromDomainModel(v));
+            return Ok(response);
         }
         catch (Exception ex)
         {
@@ -34,21 +36,17 @@ public class ViewController : ControllerBase
     }
     
     [HttpPost("")]
-    public async Task<ActionResult<IEnumerable<View>>> CreateView([FromBody] CreateViewApi requestCreateView)
+    public async Task<ActionResult<ViewResponseApi>> CreateView([FromBody] CreateViewApi request)
     {
         try
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var view = new View
-            {
-                From = requestCreateView.From,
-                To = requestCreateView.To
-            };
-
+            var view = CreateViewApi.ToDomainModel(request);
             await _viewService.AddAsync(view);
-            return Ok();
+            var response = ViewResponseApi.FromDomainModel(view);
+            return Ok(response);
         }
         catch (Exception ex)
         {

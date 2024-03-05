@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Signee.ManagerWeb.Models.Auth;
+using Signee.Services.Areas.Auth.Models;
 
 namespace Signee.Services.Areas.Auth.Contracts;
 

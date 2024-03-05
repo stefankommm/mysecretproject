@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Signee.Domain.Identity;
-using Signee.ManagerWeb.Models.Auth;
+using Signee.Resources.Resources;
 using Signee.Services.Areas.Auth.Contracts;
+using Signee.Services.Areas.Auth.Models;
 
 namespace Signee.ManagerWeb.Controllers;
 
@@ -56,7 +57,7 @@ public class UserController : ControllerBase
                 return BadRequest(ModelState);
 
             var authResponse = await _authenticationService.AuthenticateAsync(requestApi);
-            return Ok(authResponse);
+            return Ok(new { message = Resource.Auth_LoginSuccessfull, userData = authResponse });
         }
         catch (Exception ex)
         {

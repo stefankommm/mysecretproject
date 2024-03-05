@@ -1,7 +1,20 @@
 namespace Signee.ManagerWeb.Models.Display;
+using Display = Domain.Entities.Display.Display;
 
 public class CreateDisplayApi
-{
-    public string? Id { get; set; }
+{ 
     public string? Name { get; set; }
+    
+    /// <summary>
+    /// Maps API model CreateDisplayApi to domain model Display 
+    /// </summary>
+    /// <param name="displayApi">API model</param>
+    /// <returns>Domain model</returns>
+    public static Display ToDomainModel(CreateDisplayApi displayApi)
+    {
+        return new Display
+        {
+            Name = displayApi.Name
+        };
+    }
 }

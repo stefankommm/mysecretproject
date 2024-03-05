@@ -1,4 +1,4 @@
-﻿namespace Signee.DisplayHandler;
+﻿namespace Signee.DisplayHandler.Hubs.Contracts;
 
 public interface IDisplayMessageClient
 {

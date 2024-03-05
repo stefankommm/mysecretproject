@@ -1,7 +1,7 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Signee.DisplayHandler;
 using Microsoft.EntityFrameworkCore;
+using Signee.DisplayHandler.Hubs;
 using Signee.Domain.RepositoryContracts.Areas.Display;
 using Signee.Infrastructure.PostgreSql;
 using Signee.Infrastructure.PostgreSql.Areas.Display;
@@ -18,7 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add DB Context (connection)
-var dbConnectionString = builder.Configuration.GetValue<string>("ConnectionStrings:PostgreSql");
+var dbConnectionString = builder.Configuration.GetConnectionString("PostgreSql");
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
     opt.UseNpgsql(dbConnectionString));
 
@@ -26,7 +26,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 builder.Services.AddScoped<IDisplayRepository>(s => new DisplayRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>()));
 
-// Allow cors for frontend
+// Allow CORS for frontend (when running locally)
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
 builder.Services.AddCors(options =>
 {

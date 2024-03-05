@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Signee.Domain.Identity;
-using Signee.ManagerWeb.Models.Auth;
 using Signee.Resources.Resources;
 using Signee.Services.Areas.Auth.Contracts;
+using Signee.Services.Areas.Auth.Models;
 using Signee.Services.Areas.User.Contracts;
 
 namespace Signee.Services.Areas.Auth.Services;

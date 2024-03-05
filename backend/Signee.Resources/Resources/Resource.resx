@@ -126,6 +126,9 @@
   <data name="Auth_NoExistentUser" xml:space="preserve">
     <value>Používateľ neexistuje.</value>
   </data>
+  <data name="Auth_LoginSuccessfull" xml:space="preserve">
+    <value>Prihlásenie úspešné.</value>
+  </data>
   <data name="ManagerWeb_DisplayIdRetreivalError" xml:space="preserve">
     <value>Pri načítavaní displeja s ID: {id} sa vyskytla chyba.</value>
   </data>

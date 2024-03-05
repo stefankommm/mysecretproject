@@ -17,9 +17,17 @@ public class PostgreSqlRepository<T> : IGenericRepository<T> where T : class
 
     public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
 
-    public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate) => await _dbSet.Where(predicate).ToListAsync();
-
+    public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate) => await _dbSet.Where(predicate).ToListAsync();
+    
+    public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate) => (await FindAllAsync(predicate)).FirstOrDefault();
+    
     public async Task<T?> GetByIdAsync(object id) => await _dbSet.FindAsync(id);
+    
+    public async Task<IEnumerable<T>> GetAllByIdAsync(IEnumerable<object> ids)
+    {
+        var entities = await Task.WhenAll(ids.Select(id => GetByIdAsync(id)));
+        return entities.Where(entity => entity != null)!;
+    }
 
     public async Task AddAsync(T entity)
     {
@@ -38,13 +46,6 @@ public class PostgreSqlRepository<T> : IGenericRepository<T> where T : class
         var entity = await GetByIdAsync(id);
         if (entity != null)
             await DeleteAsync(entity);
-    }
-    
-    public async Task UpdateByIdAsync(object id)
-    {
-        var entity = await GetByIdAsync(id);
-        if (entity != null)
-            await UpdateAsync(entity);
     }
     
     public async Task UpdateAsync(T entity)

@@ -1,4 +1,4 @@
-namespace Signee.ManagerWeb.Models.Auth;
+namespace Signee.Services.Areas.Auth.Models;
 
 public class AuthResponseApi
 {

@@ -2,27 +2,20 @@ using System.Security.Claims;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Signee.Domain.Entities.Display;
-using Signee.Domain.Entities.Group;
-using Signee.Domain.Entities.View;
-using Signee.ManagerWeb.Models.Display;
 using Signee.ManagerWeb.Models.Group;
 using Signee.Services.Areas.Display.Contracts;
 using Signee.Services.Areas.Group.Contracts;
 
 namespace Signee.ManagerWeb.Controllers;
 
-
 [ApiVersion( 1.0 )]
 [ApiController]
 [Route("api/[controller]" )]
 public class GroupController : ControllerBase
 {
-
     private readonly IGroupService _groupService;
     private readonly IDisplayService _displayService;
-
-
+    
     public GroupController(IGroupService groupService, IDisplayService displayService)
     {
         _groupService = groupService;
@@ -32,27 +25,13 @@ public class GroupController : ControllerBase
     
     [Authorize(Roles = "Admin, User")]
     [HttpGet("")]
-    public async Task<ActionResult<IEnumerable<GroupDto>>> GetAllGroups()
+    public async Task<ActionResult<IEnumerable<GroupResponseApi>>> GetAllGroups()
     {
         try
         {
-            var groups = await _groupService.GetAll();
-        
-            var groupDtos = groups.Select(group => new GroupDto
-            {
-                Id = group.Id!,
-                Name = group.Name!,
-                Displays = group.Displays.Select(d => new DisplayApi()
-                {
-                    Id = d.Id,
-                    Name = d.Name,
-                    PairingCode = d.PairingCode,
-                    GroupId = d.GroupId
-                }).ToList(),      
-                Views = group.Views!.Select(v => v.Id).ToList()
-            }).ToList();
-            
-            return Ok(groupDtos);
+            var groups = await _groupService.GetAllAsync();
+            var response = groups.Select(g => GroupResponseApi.FromDomainModel(g)).ToList();
+            return Ok(response);
         }
         catch (Exception ex)
         {
@@ -62,15 +41,13 @@ public class GroupController : ControllerBase
     
     [Authorize(Roles = "Admin, User")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<Group>> GetGroupById(string id)
+    public async Task<ActionResult<GroupResponseApi>> GetGroupById(string id)
     {
         try
         {
-            var group = await _groupService.GetById(id);
-            if (group == null)
-                return NotFound();
-
-            return Ok(group);
+            var group = await _groupService.GetByIdAsync(id);
+            var response = GroupResponseApi.FromDomainModel(group);
+            return Ok(response);
         }
         catch (Exception ex)
         {
@@ -78,47 +55,32 @@ public class GroupController : ControllerBase
         }
     }
     
-    [Authorize(Roles = "Admin, User")]
+    
     [HttpPost("")]
-    public async Task<ActionResult<GroupDto>> CreateGroup([FromBody] CreateGroupApi requestCreateGroup)
+    public async Task<ActionResult<GroupResponseApi>> CreateGroup([FromBody] CreateGroupApi request)
     {
         try
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var group = CreateGroupApi.ToDomainModel(request);
+            
             // Extract UserID from the claim we provided user to create JWT Token
-            ClaimsPrincipal currentUser = this.User;
+            ClaimsPrincipal currentUser = User;
             var authorizedUser = currentUser.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            group.UserId = authorizedUser;
             
-            var group = new Group
-            {
-                Name = requestCreateGroup.Name,
-                Displays = new List<Display>(),
-                Views = new List<View>(),
-                UserId = authorizedUser
-            };
-
-            // Add the group to the database
-            await _groupService.Add(group, authorizedUser);
+            await _groupService.AddAsync(group);
+            var response = GroupResponseApi.FromDomainModel(group);
             
-            // Construct a DTO for the created group
-            var groupDto = new GroupDto
-            {
-                Id = group.Id!,
-                Name = requestCreateGroup.Name!,
-                Displays = new List<DisplayApi>(),
-                Views = new List<string>()     
-            };
-            
-            return Ok(groupDto);
+            return Ok(response);
         }
         catch (Exception ex)
         {
             return BadRequest(new { message = ex.Message });
         }
     }
-
    
     [Authorize(Roles = "Admin, User")]
     [HttpPut("{id}")]
@@ -126,13 +88,10 @@ public class GroupController : ControllerBase
     {
         try
         {
-            var group = await _groupService.GetById(id);
-            if (group == null)
-                return NotFound();
-
+            var group = await _groupService.GetByIdAsync(id);
             group.Name = requestUpdateGroup.Name;
-            await _groupService.Update(group);
-            return NoContent();
+            await _groupService.UpdateAsync(group);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -146,12 +105,8 @@ public class GroupController : ControllerBase
     {
         try
         {
-            var group = await _groupService.GetById(id);
-            if (group == null)
-                return NotFound();
-
-            await _groupService.DeleteById(id);
-            return NoContent();
+            await _groupService.DeleteByIdAsync(id);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -165,7 +120,7 @@ public class GroupController : ControllerBase
     {
         try
         {
-            await _groupService.AddDisplayToGroup(groupId, displayId);
+            await _groupService.AddDisplayToGroupAsync(groupId, displayId);
             return Ok();
         }
         catch (Exception ex)
@@ -180,7 +135,7 @@ public class GroupController : ControllerBase
     {
         try
         {
-            await _groupService.DeleteDisplayFromGroup(groupId, displayId);
+            await _groupService.RemoveDisplayFromGroupAsync(groupId, displayId);
             return Ok();
         }
         catch (Exception ex)

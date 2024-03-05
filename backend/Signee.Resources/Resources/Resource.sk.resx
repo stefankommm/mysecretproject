@@ -32,4 +32,7 @@
     <data name="PopulateDb_AdminUserCreationError" xml:space="preserve">
         <value>Pri vytváraní predvoleného admin účtu sa vyskytla chyba.</value>
     </data>
+    <data name="Auth_LoginSuccessfull" xml:space="preserve">
+        <value>Prihlásenie úspešné.</value>
+    </data>
 </root>

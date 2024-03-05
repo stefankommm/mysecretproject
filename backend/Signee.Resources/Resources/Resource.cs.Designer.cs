@@ -78,6 +78,15 @@ namespace Signee.Resources.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Přihlášení úspěšné..
+        /// </summary>
+        public static string Auth_LoginSuccessfull {
+            get {
+                return ResourceManager.GetString("Auth_LoginSuccessfull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uživatel neexistuje.
         ///.
         /// </summary>

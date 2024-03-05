@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Signee.Domain.Identity;
 
-namespace Signee.ManagerWeb.Models.Auth;
+namespace Signee.Services.Areas.Auth.Models;
 
 public class RegistrationRequestApi
 {

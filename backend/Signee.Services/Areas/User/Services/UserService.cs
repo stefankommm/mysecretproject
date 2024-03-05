@@ -18,10 +18,17 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<ApplicationUser?> FindByEmailAsync(string email)
+    public async Task<ApplicationUser> GetByIdAsync(string id)
     {
-        return await _userRepository.FindByEmailAsync(email);
+        var user = await _userRepository.GetByIdAsync(id);
+        if (user == null)
+            throw new InvalidOperationException($"User with id: {id} not found!");
+
+        return user;
     }
+
+    public async Task<ApplicationUser?> FindByEmailAsync(string email) 
+        => await _userRepository.FindByEmailAsync(email);
 
     public async Task<bool> IsEmailUniqueAsync(string email)
     {
@@ -29,15 +36,17 @@ public class UserService : IUserService
         return existingUser == null;
     }
 
-    public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password)
-    {
-        return await _userRepository.CreateUserAsync(user, password);
-    }
+    public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password) =>
+        await _userRepository.CreateUserAsync(user, password);
 
-    public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
+    public async Task UpdateAsync(ApplicationUser user)
     {
-        return await _userRepository.CheckPasswordAsync(user, password);
+        await GetByIdAsync(user.Id); // Checks if user exists and ig not throws exception
+        await _userRepository.UpdateAsync(user);
     }
+    
+    public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
+        => await _userRepository.CheckPasswordAsync(user, password);
 
     public async Task EnsureAdminUserCreatedAsync(string adminEmail, string adminPassword)
     {

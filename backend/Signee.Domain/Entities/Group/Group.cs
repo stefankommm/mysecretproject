@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Signee.Domain.Entities.Display;
 using Signee.Domain.Identity;
 
 namespace Signee.Domain.Entities.Group;

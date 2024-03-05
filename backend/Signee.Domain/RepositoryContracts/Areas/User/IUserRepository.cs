@@ -9,9 +9,20 @@ namespace Signee.Domain.RepositoryContracts.Areas.User;
 public interface IUserRepository
 {
 
-    Task Update(ApplicationUser user);
+    /// <summary>
+    /// Updates applicationUser
+    /// </summary>
+    /// <param name="user">updated model of ApplicationUser</param>
+    /// <returns></returns>
+    Task UpdateAsync(ApplicationUser user);
     
-    Task<ApplicationUser?> GetUserByIdAsync(string id);
+    /// <summary>
+    /// Retrieves user by it´s ID
+    /// </summary>
+    /// <param name="id">user ID</param>
+    /// <returns>ApplicationUser or null if not exists</returns>
+    Task<ApplicationUser?> GetByIdAsync(string id);
+    
     /// <summary>
     /// Finds a user by their email address.
     /// </summary>
