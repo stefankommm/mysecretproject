@@ -3,7 +3,7 @@ using Group =  Domain.Entities.Group.Group;
 
 public class CreateGroupApi
 {
-    public string? Name { get; set; }
+    public string Name { get; set; }
     
     /// <summary>
     /// Maps API model CreateGroupApi to domain model Group 

@@ -24,14 +24,35 @@ public class GroupService : IGroupService
         _displayService = displayService;
         _viewService = viewService;
     }
+    
+    public async Task<Group> AddAsync(Group g, string userId)
+    {
+        var user = await _userService.GetByIdAsync(userId);
+        var group = new Group
+        {
+            Name = g.Name,
+            UserId = user.Id
+        };
+        await _groupRepository.AddAsync(group);
+        return group;
+    }
+    
+    public async Task AddAsync(Group group)
+    {
+        
+        var user = await _userService.GetByIdAsync(group?.UserId ?? string.Empty);
+        user.Groups.Add(group);
 
+        await _userService.UpdateAsync(user);
+        await _groupRepository.AddAsync(group);
+    }
+    
     public async Task<IEnumerable<Group>> GetAllAsync() => await _groupRepository.GetAllAsync();
 
     public async Task<Group> GetByIdAsync(string id)
     {
-        var group = await _groupRepository.GetByIdAsync(id);
-        if (group == null)
-            throw new InvalidOperationException($"Group with id: {id} not found");
+        var group = await _groupRepository.GetByIdAsync(id)
+            ?? throw new InvalidOperationException($"Group with id: {id} not found");
 
         return group;
     }
@@ -44,23 +65,20 @@ public class GroupService : IGroupService
 
     public async Task UpdateAsync(Group g)
     {
-        await GetByIdAsync(g.Id ?? string.Empty); // Checks if group exists and if not throw exception
-        await _groupRepository.UpdateAsync(g);
+        if(g.Id == null)
+            throw new InvalidOperationException("Group ID cannot be null -> Can't Update");
+        var group = await GetByIdAsync(g.Id ?? string.Empty)
+            ?? throw new InvalidOperationException($"Group with id: {g.Id} not found");
+        
+        // #TODO - Ak pouzivatel vlastni viacero group, potom tieto groupy musia byť jedinečné
+        
+        await _groupRepository.UpdateAsync(group);
     }
 
     public async Task DeleteByIdAsync(string id)
     {
         await GetByIdAsync(id); // Checks if group exists and if not throw exception
         await _groupRepository.DeleteByIdAsync(id);
-    }
-
-    public async Task AddAsync(Group group)
-    {
-        var user = await _userService.GetByIdAsync(group?.UserId ?? string.Empty);
-        user.Groups.Add(group);
-
-        await _userService.UpdateAsync(user);
-        await _groupRepository.AddAsync(group);
     }
     
     public async Task<IEnumerable<Group>> GetByUserIdAsync(string userId)
@@ -92,10 +110,18 @@ public class GroupService : IGroupService
     
     public async Task AddViewToGroupAsync(string groupId, string viewId)
     {
-        var group = await GetByIdAsync(groupId);
-        var view = await _viewService.GetByIdAsync(viewId);
+        var group = await GetByIdAsync(groupId)
+            ?? throw new InvalidOperationException($"Group with id: {groupId} not found");
+        
+        var view = await _viewService.GetByIdAsync(viewId)
+            ?? throw new InvalidOperationException($"View with id: {viewId} not found");
+
+        if (view.GroupId != null)
+            throw new InvalidOperationException($"View with id: {viewId} already belongs to a group");
         
         group.Views.Add(view);
+        
+     
     }
 
     public async Task RemoveViewFromGroupAsync(string groupId, string viewId)

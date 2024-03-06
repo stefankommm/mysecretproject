@@ -2,8 +2,12 @@ namespace Signee.Services.Areas.Group.Contracts;
 using Group =  Domain.Entities.Group.Group;
 using View = Domain.Entities.View.View;
 
+
 public interface IGroupService
 {
+    Task<Group> AddAsync(Group g, string userId);
+    
+    Task AddAsync(Group g);
     
     Task<IEnumerable<Group>> GetAllAsync();
     
@@ -13,7 +17,6 @@ public interface IGroupService
 
     Task<IEnumerable<Group>> GetAllWithMultipleDisplaysAsync();
     
-    Task AddAsync(Group g);
     
     Task UpdateAsync(Group g);
     

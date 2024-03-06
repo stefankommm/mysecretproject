@@ -12,11 +12,16 @@ public class Group
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string? Id{ get; set; }
     
-    public string? Name { get; set; }
+    public string Name { get; set; }
+    
+    // Relationships
+    public string? UserId { get; set; }
+    
+    // Virtual Relationships
     public ICollection<Display> Displays { get; set; } = new List<Display>();
+    
     public ICollection<View> Views { get; set; } = new List<View>();
     
     public ApplicationUser? User { get; set; }
-    
-    public string? UserId { get; set; }
+
 }

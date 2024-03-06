@@ -3,8 +3,10 @@ using Display = Domain.Entities.Display.Display;
 
 public class CreateDisplayApi
 { 
-    public string? Name { get; set; }
+    public string Name { get; set; }
     
+    public string? GroupId { get; set; }
+
     /// <summary>
     /// Maps API model CreateDisplayApi to domain model Display 
     /// </summary>
@@ -14,7 +16,8 @@ public class CreateDisplayApi
     {
         return new Display
         {
-            Name = displayApi.Name
+            Name = displayApi.Name,
+            GroupId = displayApi.GroupId ?? null
         };
     }
 }

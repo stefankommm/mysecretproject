@@ -7,10 +7,21 @@ public class DisplayResponseApi
     
     public string? Name { get; set; } = string.Empty;
     
-    public int? PairingCode { get; set; }
+    public string? PairingCode { get; set; }
     
     public string? GroupId { get; set; }
     
+    public bool? Online { get; set; }
+
+    public bool? PairedWithDevice { get; set; }
+    
+    public DateTime? LastOnline { get; set; }
+    
+    public string? IpAddress { get; set; }
+
+    public string? ViewPort { get; set; }
+
+
     /// <summary>
     /// Maps domain model Display to DisplayResponseApi model 
     /// </summary>
@@ -22,8 +33,13 @@ public class DisplayResponseApi
         {
             Id = display?.Id ?? string.Empty,
             Name = display?.Name ?? string.Empty,
-            PairingCode = display?.PairingCode ?? new(),
-            GroupId = display?.GroupId ?? string.Empty
+            PairingCode = display?.PairingCode.ToString() ?? string.Empty,
+            GroupId = display?.GroupId ?? string.Empty,
+            Online = display?.Online ?? false,
+            PairedWithDevice = display?.PairedWithDevice ?? false,
+            LastOnline = display?.LastOnline,
+            IpAddress = display?.IpAddress?.ToString() ?? string.Empty,
+            ViewPort = display?.ViewPort ?? string.Empty
         };
     }
 }

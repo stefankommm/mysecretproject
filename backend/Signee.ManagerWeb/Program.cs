@@ -105,12 +105,13 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserRepository>(s => new UserRepository(s.GetRequiredService<UserManager<ApplicationUser>>()));
 builder.Services.AddScoped<IUserService>(s => new UserService(s.GetRequiredService<IUserRepository>(), s.GetRequiredService<ILogger<UserService>>()));
 builder.Services.AddScoped<IAuthService>(s => new AuthService(s.GetRequiredService<IUserService>(), s.GetRequiredService<ITokenService>(), s.GetRequiredService<ILogger<AuthService>>()));
-builder.Services.AddScoped<IDisplayRepository>(s => new DisplayRepository(s.GetRequiredService<ApplicationDbContext>()));
-builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>()));
 builder.Services.AddScoped<IGroupRepository>(s => new GroupRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IUserService>(), s.GetRequiredService<IGroupRepository>(), s.GetRequiredService<IDisplayService>(), s.GetRequiredService<IViewService>()));
 builder.Services.AddScoped<IViewRepository>(s => new ViewRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IViewService>(s => new ViewService(s.GetRequiredService<IViewRepository>()));
+builder.Services.AddScoped<IDisplayRepository>(s => new DisplayRepository(s.GetRequiredService<ApplicationDbContext>()));
+builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>(), s.GetRequiredService<IViewService>(), s.GetRequiredService<IGroupService>()));
+
 
 // Support string to enum conversions in the API
 builder.Services.AddControllers().AddJsonOptions(opt =>
