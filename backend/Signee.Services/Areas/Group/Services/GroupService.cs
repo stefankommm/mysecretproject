@@ -1,7 +1,4 @@
-using Signee.Domain.RepositoryContracts.Areas.Display;
 using Signee.Domain.RepositoryContracts.Areas.Group;
-using Signee.Domain.RepositoryContracts.Areas.User;
-using Signee.Domain.RepositoryContracts.Areas.View;
 using Signee.Services.Areas.Display.Contracts;
 using Signee.Services.Areas.Group.Contracts;
 using Signee.Services.Areas.User.Contracts;
@@ -70,7 +67,9 @@ public class GroupService : IGroupService
         var group = await GetByIdAsync(g.Id ?? string.Empty)
             ?? throw new InvalidOperationException($"Group with id: {g.Id} not found");
         
-        // #TODO - Ak pouzivatel vlastni viacero group, potom tieto groupy musia byť jedinečné
+        // #TODO - Ak volajucim je USER, potom groupy musia byt jedinecne
+        
+        // #TODO - Ak volajucim je ADMIN, potom je jedno ako sa upravena groupa bude volat  
         
         await _groupRepository.UpdateAsync(group);
     }

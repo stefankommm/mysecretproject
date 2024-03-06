@@ -14,6 +14,8 @@ using Signee.Domain.RepositoryContracts.Areas.Display;
 using Signee.Domain.RepositoryContracts.Areas.Group;
 using Signee.Domain.RepositoryContracts.Areas.User;
 using Signee.Domain.RepositoryContracts.Areas.View;
+using Signee.Services.Auth.Contracts;
+using Signee.Services.Auth.Services;
 using Signee.Infrastructure.PostgreSql;
 using Signee.Infrastructure.PostgreSql.Areas.Display;
 using Signee.Infrastructure.PostgreSql.Areas.Group;
@@ -102,9 +104,10 @@ builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =
 
 // Register services for Dependency Injection
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IUserRepository>(s => new UserRepository(s.GetRequiredService<UserManager<ApplicationUser>>()));
-builder.Services.AddScoped<IUserService>(s => new UserService(s.GetRequiredService<IUserRepository>(), s.GetRequiredService<ILogger<UserService>>()));
+builder.Services.AddScoped<IUserContextProvider, UserContextProvider>();
 builder.Services.AddScoped<IAuthService>(s => new AuthService(s.GetRequiredService<IUserService>(), s.GetRequiredService<ITokenService>(), s.GetRequiredService<ILogger<AuthService>>()));
+builder.Services.AddScoped<IUserRepository>(s => new UserRepository(s.GetRequiredService<UserManager<ApplicationUser>>()));
+builder.Services.AddScoped<IUserService>(s => new UserService(s.GetRequiredService<IUserRepository>(), s.GetRequiredService<ILogger<UserService>>(), s.GetRequiredService<IUserContextProvider>()));
 builder.Services.AddScoped<IGroupRepository>(s => new GroupRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IUserService>(), s.GetRequiredService<IGroupRepository>(), s.GetRequiredService<IDisplayService>(), s.GetRequiredService<IViewService>()));
 builder.Services.AddScoped<IViewRepository>(s => new ViewRepository(s.GetRequiredService<ApplicationDbContext>()));

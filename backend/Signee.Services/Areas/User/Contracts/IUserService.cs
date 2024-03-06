@@ -9,6 +9,12 @@ namespace Signee.Services.Areas.User.Contracts;
 public interface IUserService
 {
     /// <summary>
+    /// Finds the role of the user calling this method using Context
+    /// </summary>
+    /// <returns>Admin / User based on the user role</returns>
+    Task<string> WhoAmIAsync();
+    
+    /// <summary>
     /// Checks if user with ID exists and if it does retrieves user
     /// </summary>
     /// <param name="id">user ID</param>

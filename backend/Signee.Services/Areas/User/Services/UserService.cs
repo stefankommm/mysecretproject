@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Signee.Domain.Identity;
 using Signee.Domain.RepositoryContracts.Areas.User;
+using Signee.Services.Auth.Contracts;
 using Signee.Resources.Resources;
 using Signee.Services.Areas.User.Contracts;
 
@@ -11,11 +12,24 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly ILogger<UserService> _logger;
-
-    public UserService(IUserRepository userRepository, ILogger<UserService> logger)
+    private readonly IUserContextProvider _userContext;
+    
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger, IUserContextProvider userContext)
     {
         _userRepository = userRepository;
         _logger = logger;
+        _userContext = userContext;
+    }
+ 
+    
+    public Task<string> WhoAmIAsync()
+    {
+        var roles = _userContext.GetCurrentRoles();
+        var role = roles.FirstOrDefault();
+        if (role == Role.Admin) return Task.FromResult("Admin");
+        if (role == Role.User) return Task.FromResult("User");
+        
+        return Task.FromResult("I don't know");
     }
 
     public async Task<ApplicationUser> GetByIdAsync(string id)
