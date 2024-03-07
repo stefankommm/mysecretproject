@@ -212,7 +212,7 @@ public class DisplayServiceUnitTests
             displayRepositoryMock.Setup(repo => repo.GetByIdAsync(displayId)).ReturnsAsync(display);
 
             // Act
-            var result = await displayService.GeneratePairingCodeAsync(displayId);
+            var result = await displayService.RegeneratePairingCodeAsync(displayId);
 
             // Assert
             displayRepositoryMock.Verify(repo => repo.UpdateAsync(display), Times.Once);

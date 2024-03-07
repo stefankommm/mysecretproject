@@ -20,7 +20,7 @@ public class Widget
     public string? ViewId { get; set; }
     
     // Virtual Relationships
-    public View? View { get; set; }
+    public View View { get; set; }
     
-    public ICollection<WidgetSettings>? WidgetSettings { get; set; } = new List<WidgetSettings>();
+    public ICollection<WidgetSettings> WidgetSettings { get; set; } = new List<WidgetSettings>();
 }

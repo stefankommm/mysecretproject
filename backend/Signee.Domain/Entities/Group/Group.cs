@@ -19,7 +19,6 @@ public class Group
     
     // Virtual Relationships
     public ICollection<Display> Displays { get; set; } = new List<Display>();
-    
     public ICollection<View> Views { get; set; } = new List<View>();
     
     public ApplicationUser? User { get; set; }

@@ -8,6 +8,7 @@ using Signee.Services.Areas.User.Contracts;
 
 namespace Signee.Services.Areas.User.Services;
 
+//#Todo: Add _userContextProvider and appropriate methods
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;

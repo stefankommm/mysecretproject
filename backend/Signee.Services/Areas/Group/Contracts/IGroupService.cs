@@ -5,7 +5,6 @@ using View = Domain.Entities.View.View;
 
 public interface IGroupService
 {
-    Task<Group> AddAsync(Group g, string userId);
     
     Task AddAsync(Group g);
     
@@ -16,7 +15,6 @@ public interface IGroupService
     Task<IEnumerable<Group>> GetAllWithSingleDisplayAsync();
 
     Task<IEnumerable<Group>> GetAllWithMultipleDisplaysAsync();
-    
     
     Task UpdateAsync(Group g);
     
@@ -30,7 +28,7 @@ public interface IGroupService
     
     /// <param name="displayId"></param>
     /// <returns>All groups that contain display with given ID</returns>
-    Task<IEnumerable<Group>> GetByDisplayIdAsync(string displayId);
+    Task<Group> GetByDisplayIdAsync(string displayId);
     
     /// ----- DISPLAY METHODS -----
 

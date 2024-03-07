@@ -10,6 +10,8 @@ namespace Signee.Services.Auth.Contracts
 
         // Gets a list of roles associated with the current user
         IEnumerable<Role> GetCurrentRoles();
+        
+        bool isAdmin();
 
         // You can add more methods related to the user context as needed
         // For example, getting permissions or other user-specific information

@@ -14,8 +14,6 @@ using Signee.Domain.RepositoryContracts.Areas.Display;
 using Signee.Domain.RepositoryContracts.Areas.Group;
 using Signee.Domain.RepositoryContracts.Areas.User;
 using Signee.Domain.RepositoryContracts.Areas.View;
-using Signee.Services.Auth.Contracts;
-using Signee.Services.Auth.Services;
 using Signee.Infrastructure.PostgreSql;
 using Signee.Infrastructure.PostgreSql.Areas.Display;
 using Signee.Infrastructure.PostgreSql.Areas.Group;
@@ -31,6 +29,8 @@ using Signee.Services.Areas.User.Contracts;
 using Signee.Services.Areas.User.Services;
 using Signee.Services.Areas.View.Contracts;
 using Signee.Services.Areas.View.Services;
+using Signee.Services.Auth.Contracts;
+using Signee.Services.Auth.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -109,11 +109,11 @@ builder.Services.AddScoped<IAuthService>(s => new AuthService(s.GetRequiredServi
 builder.Services.AddScoped<IUserRepository>(s => new UserRepository(s.GetRequiredService<UserManager<ApplicationUser>>()));
 builder.Services.AddScoped<IUserService>(s => new UserService(s.GetRequiredService<IUserRepository>(), s.GetRequiredService<ILogger<UserService>>(), s.GetRequiredService<IUserContextProvider>()));
 builder.Services.AddScoped<IGroupRepository>(s => new GroupRepository(s.GetRequiredService<ApplicationDbContext>()));
-builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IUserService>(), s.GetRequiredService<IGroupRepository>(), s.GetRequiredService<IDisplayService>(), s.GetRequiredService<IViewService>()));
+builder.Services.AddScoped<IGroupService>(s => new GroupService(s.GetRequiredService<IUserService>(), s.GetRequiredService<IGroupRepository>(), s.GetRequiredService<IDisplayService>(), s.GetRequiredService<IViewService>(), s.GetRequiredService<IUserContextProvider>()));
 builder.Services.AddScoped<IViewRepository>(s => new ViewRepository(s.GetRequiredService<ApplicationDbContext>()));
-builder.Services.AddScoped<IViewService>(s => new ViewService(s.GetRequiredService<IViewRepository>()));
+builder.Services.AddScoped<IViewService>(s => new ViewService(s.GetRequiredService<IViewRepository>(), s.GetRequiredService<IGroupService>() ,s.GetRequiredService<IUserContextProvider>()));
 builder.Services.AddScoped<IDisplayRepository>(s => new DisplayRepository(s.GetRequiredService<ApplicationDbContext>()));
-builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>(), s.GetRequiredService<IViewService>(), s.GetRequiredService<IGroupService>()));
+builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>(), s.GetRequiredService<IViewService>(), s.GetRequiredService<IGroupService>(), s.GetRequiredService<IUserContextProvider>()));
 
 
 // Support string to enum conversions in the API

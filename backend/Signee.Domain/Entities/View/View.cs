@@ -17,10 +17,10 @@ public class View
     public DateTime? To { get; set; }
     
     //Relationships
-    public string? GroupId { get; set; }
+    public string GroupId { get; set; }
     
     // Virtual Realtionships
-    public Group? Group { get; set; }
+    public Group Group { get; set; }
     
     public ICollection<Widget> Widgets { get; set; } = new List<Widget>();
 }

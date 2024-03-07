@@ -25,9 +25,9 @@ public class ViewController : ControllerBase
     {
         try
         {
-            var views = await _viewService.GetAllAsync();
-            var response = views.Select(v => ViewResponseApi.FromDomainModel(v));
-            return Ok(response);
+            // var views = await _viewService.GetAllByGroupIdAsync();
+            // var response = views.Select(v => ViewResponseApi.FromDomainModel(v));
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -40,13 +40,13 @@ public class ViewController : ControllerBase
     {
         try
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var view = CreateViewApi.ToDomainModel(request);
-            await _viewService.AddAsync(view);
-            var response = ViewResponseApi.FromDomainModel(view);
-            return Ok(response);
+            // if (!ModelState.IsValid)
+            //     return BadRequest(ModelState);
+            //
+            // var view = CreateViewApi.ToDomainModel(request);
+            // await _viewService.AddAsync(view);
+            // var response = ViewResponseApi.FromDomainModel(view);
+            return Ok();
         }
         catch (Exception ex)
         {
