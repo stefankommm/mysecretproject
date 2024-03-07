@@ -5,16 +5,19 @@ using Signee.Services.Areas.User.Contracts;
 using Signee.Services.Areas.View.Contracts;
 
 namespace Signee.Services.Areas.Group.Services;
+
 using Group = Domain.Entities.Group.Group;
 using View = Domain.Entities.View.View;
+
 public class GroupService : IGroupService
 {
-    private readonly IUserService _userService;
-    private readonly IGroupRepository _groupRepository;
     private readonly IDisplayService _displayService;
+    private readonly IGroupRepository _groupRepository;
+    private readonly IUserService _userService;
     private readonly IViewService _viewService;
 
-    public GroupService(IUserService userService, IGroupRepository groupRepository, IDisplayService displayService, IViewService viewService)
+    public GroupService(IUserService userService, IGroupRepository groupRepository, IDisplayService displayService,
+        IViewService viewService)
     {
         _userService = userService;
         _groupRepository = groupRepository;
@@ -53,12 +56,16 @@ public class GroupService : IGroupService
 
         return group;
     }
-    
-    public async Task<IEnumerable<Group>> GetAllWithSingleDisplayAsync() 
-        => await _groupRepository.FindAllAsync(g => (g.Displays.Count == 1));
+
+    public async Task<IEnumerable<Group>> GetAllWithSingleDisplayAsync()
+    {
+        return await _groupRepository.FindAllAsync(g => g.Displays.Count == 1);
+    }
 
     public async Task<IEnumerable<Group>> GetAllWithMultipleDisplaysAsync()
-        => await _groupRepository.FindAllAsync(g => (g.Displays.Count > 1));
+    {
+        return await _groupRepository.FindAllAsync(g => g.Displays.Count > 1);
+    }
 
     public async Task UpdateAsync(Group g)
     {
@@ -86,27 +93,39 @@ public class GroupService : IGroupService
         return await _groupRepository.FindAllAsync(g => g.UserId == user.Id);
     }
 
-    public async Task<IEnumerable<Group>> GetByDisplayIdAsync(string displayId) 
-        => await _groupRepository.FindAllAsync(g => g.Displays.Any(d => d.Id == displayId));
-    
+    public async Task<IEnumerable<Group>> GetByDisplayIdAsync(string displayId)
+    {
+        return await _groupRepository.FindAllAsync(g => g.Displays.Any(d => d.Id == displayId));
+    }
+
     public async Task AddDisplayToGroupAsync(string groupId, string displayId)
-    { 
+    {
         var display = await _displayService.GetByIdAsync(displayId);
         var group = await GetByIdAsync(groupId);
-        
-        group.Displays.Add(display);
-        await _groupRepository.UpdateAsync(group);
+
+        if (!group.Displays.Contains(display))
+        {
+            group.Displays.Add(display);
+            await _groupRepository.UpdateAsync(group);
+        }
+        else
+        {
+            throw new InvalidOperationException("Display is already part of the group.");
+        }
     }
 
     public async Task RemoveDisplayFromGroupAsync(string groupId, string displayId)
     {
         var display = await _displayService.GetByIdAsync(displayId);
         var group = await GetByIdAsync(groupId);
-        
+
+        if (!group.Displays.Contains(display))
+            throw new InvalidOperationException("Display does not exist in the group.");
+
         group.Displays.Remove(display);
         await _groupRepository.UpdateAsync(group);
     }
-    
+
     public async Task AddViewToGroupAsync(string groupId, string viewId)
     {
         var group = await GetByIdAsync(groupId)
@@ -119,30 +138,28 @@ public class GroupService : IGroupService
             throw new InvalidOperationException($"View with id: {viewId} already belongs to a group");
         
         group.Views.Add(view);
-        
-     
     }
 
     public async Task RemoveViewFromGroupAsync(string groupId, string viewId)
     {
         var group = await GetByIdAsync(groupId);
         var view = await _viewService.GetByIdAsync(viewId);
-        
+
         if (!group.Views.Contains(view))
             throw new InvalidOperationException($"View with id: {viewId} not found in group with id: {groupId}");
         
-        group.Views.Remove(view);
+        view.Group = null;
     }
 
     public async Task<View?> GetCurrentViewAsync(string groupId)
     {
         var group = await GetByIdAsync(groupId);
-        
+
         if (group?.Views.Count == 0)
             return null;
-        
-        var actualViews = group?.Views.Select(v => v?.To == null ? v : (v.From < DateTime.Now && v.To > DateTime.Now) ? v : null).ToList();
+
+        var actualViews = group?.Views
+            .Select(v => v?.To == null ? v : v.From < DateTime.Now && v.To > DateTime.Now ? v : null).ToList();
         return actualViews?.FirstOrDefault();
     }
-    
 }
