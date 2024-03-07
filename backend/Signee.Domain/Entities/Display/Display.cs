@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
+using Signee.Domain.Identity;
 
 namespace Signee.Domain.Entities.Display;
 
@@ -29,7 +30,11 @@ public class Display
     
     // Relationships
     public string? GroupId { get; set; }
+    
+    public string UserId { get; set; }
 
     // Virtual Relationships
     public Group? Group { get; set; }
+    
+    public ApplicationUser User { get; set; }
 }
