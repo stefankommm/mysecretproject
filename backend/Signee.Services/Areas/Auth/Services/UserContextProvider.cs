@@ -3,7 +3,7 @@
     using Signee.Domain.Identity;
     using Signee.Services.Auth.Contracts;
 
-    namespace Signee.Services.Auth.Services;
+    namespace Signee.Services.Areas.Auth.Services;
 
     public class UserContextProvider : IUserContextProvider
     {
@@ -40,7 +40,7 @@
                 return roles;
             }
 
-            public bool isAdmin()
+            public bool IsAdmin()
             {
                 return GetCurrentRoles().Contains(Role.Admin);
             }

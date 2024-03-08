@@ -19,9 +19,11 @@ public class DisplayController : ControllerBase
     {
         _displayService = displayService;
     }
-
+    
     [Authorize (Roles = "Admin, User")]
     [HttpPost("")]
+    [Produces("application/json")]
+
     public async Task<ActionResult<Display>> CreateDisplay([FromBody]CreateDisplayApi request)
     {
         try
@@ -29,9 +31,9 @@ public class DisplayController : ControllerBase
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // TODO add error to the service if we try to add display with name that already exists
-
             var display = CreateDisplayApi.ToDomainModel(request);
+            // Set the user id to the current user
+                
             await _displayService.AddAsync(display);
             return CreatedAtAction(nameof(GetDisplay), new { id = display.Id }, display);
         }
@@ -58,7 +60,6 @@ public class DisplayController : ControllerBase
         }
     }
     
-    [Authorize (Roles = "Admin, User")]
     [HttpGet("")]
     public async Task<ActionResult<IEnumerable<DisplayResponseApi>>> GetAllDisplays()
     {
@@ -66,7 +67,7 @@ public class DisplayController : ControllerBase
         {
             var displays = await _displayService.GetAllAsync();
             var response = displays.Select(d => DisplayResponseApi.FromDomainModel(d));
-            return Ok(response);
+            return Ok();
         }
         catch (Exception ex)
         {

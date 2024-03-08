@@ -39,29 +39,48 @@ public class GroupService : IGroupService
         await _groupRepository.AddAsync(group);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>Users groups (All if ADMIN)</returns>
     public async Task<IEnumerable<Group>> GetAllAsync()
     {
-        if(_userContextProvider.isAdmin())
+        if(_userContextProvider.IsAdmin())
             return await _groupRepository.GetAllAsync();
         return await _groupRepository.FindAllAsync(g => g.UserId == _userContextProvider.GetCurrentUserId());
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>Group with Given ID if the owner is calling (ADMIN -> returns if exist)</returns>
+    /// <exception cref="InvalidOperationException">ID not Found</exception>
+    /// <exception cref="InvalidOperationException">User is not owner of the display</exception>
     public async Task<Group> GetByIdAsync(string id)
     {
         var group = await _groupRepository.GetByIdAsync(id)
             ?? throw new InvalidOperationException($"Group with id: {id} not found");
-        if (!_userContextProvider.isAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
+        if (!_userContextProvider.IsAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this group");
         
         return group;
     }
 
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns>All Users groups with one display(ADMIN- All =1d)</returns>
     public async Task<IEnumerable<Group>> GetAllWithSingleDisplayAsync()
     {
         var all = await GetAllAsync();
         return all.Where(g => g.Displays.Count == 1);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>All Users groups >1 display (ADMIN - All >1d)</returns>
     public async Task<IEnumerable<Group>> GetAllWithMultipleDisplaysAsync()
     {
         var all = await GetAllAsync();
@@ -69,6 +88,12 @@ public class GroupService : IGroupService
     }
     
 
+    /// <summary>
+    /// USER: Updates the group if the user is the owner
+    /// ADMIN: Updates the group if it exists
+    /// </summary>
+    /// <param name="g"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task UpdateAsync(Group g)
     {
         if(g.Id == null)            
@@ -77,16 +102,22 @@ public class GroupService : IGroupService
         var group = await GetByIdAsync(g.Id ?? string.Empty)
             ?? throw new InvalidOperationException($"Group with id: {g.Id} not found");
         
-        if(!_userContextProvider.isAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
+        if(!_userContextProvider.IsAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this group");
         
         await _groupRepository.UpdateAsync(group);
     }
 
+    /// <summary>
+    /// USER: Deletes the group if the user is the owner
+    /// ADMIN: Deletes the group if it exists
+    /// </summary>
+    /// <param name="id"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task DeleteByIdAsync(string id)
     {
         var group = await GetByIdAsync(id);
-        if (!_userContextProvider.isAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
+        if (!_userContextProvider.IsAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this group");
         if (group.Displays.Count > 0)
             throw new InvalidOperationException("Group contains displays, cannot delete");
@@ -96,23 +127,44 @@ public class GroupService : IGroupService
         await _groupRepository.DeleteByIdAsync(id);
     }
     
+    /// <summary>
+    /// USER: Gets all groups with the given user ID if the user is the owner
+    /// ADMIN: Gets all groups with the given user ID
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task<IEnumerable<Group>> GetByUserIdAsync(string userId)
     {
-        if (!_userContextProvider.isAdmin() && userId != _userContextProvider.GetCurrentUserId())
+        if (!_userContextProvider.IsAdmin() && userId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You can't get other user's groups.");
         return await _groupRepository.FindAllAsync(g => g.UserId == userId);
     }
 
+    /// <summary>
+    /// USER: Gets the group with the given display ID if the user is the owner and d exists
+    /// ADMIN: Gets the group with the given display ID if exists
+    /// </summary>
+    /// <param name="displayId"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task<Group> GetByDisplayIdAsync(string displayId)
     {
         var display = await _displayService.GetByIdAsync(displayId)
             ?? throw new InvalidOperationException($"Display with id: {displayId} not found");
-        if (!_userContextProvider.isAdmin() && display.UserId != _userContextProvider.GetCurrentUserId())
+        if (!_userContextProvider.IsAdmin() && display.UserId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this display");
 
         return await _groupRepository.FindAsync(g => g.Displays.Contains(display));
     }
 
+    /// <summary>
+    /// USER: Gets the group with the given view ID if the user is the owner and v exists
+    /// ADMIN: Gets the group with the given view ID if exists
+    /// </summary>
+    /// <param name="groupId"></param>
+    /// <param name="displayId"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task AddDisplayToGroupAsync(string groupId, string displayId)
     {
         var display = await _displayService.GetByIdAsync(displayId);
@@ -123,7 +175,7 @@ public class GroupService : IGroupService
         if(display == null)
             throw new InvalidOperationException("Display not found");
 
-        if (!_userContextProvider.isAdmin())
+        if (!_userContextProvider.IsAdmin())
         {
             if (display.UserId != _userContextProvider.GetCurrentUserId())
                 throw new InvalidOperationException("You are not the owner of this display");
@@ -138,6 +190,14 @@ public class GroupService : IGroupService
         await _groupRepository.UpdateAsync(group);
     }
 
+    
+    /// <summary>
+    /// USER: Removes the display from the group if the user is the owner and d exists
+    /// ADMIN: Removes the display from the group if exists
+    /// </summary>
+    /// <param name="groupId"></param>
+    /// <param name="displayId"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task RemoveDisplayFromGroupAsync(string groupId, string displayId)
     {
         var display = await _displayService.GetByIdAsync(displayId)
@@ -145,7 +205,7 @@ public class GroupService : IGroupService
         var group = await GetByIdAsync(groupId)
             ?? throw new InvalidOperationException($"Group with id: {groupId} not found");
         
-        if (!_userContextProvider.isAdmin())
+        if (!_userContextProvider.IsAdmin())
         {
             if (display.UserId != _userContextProvider.GetCurrentUserId())
                 throw new InvalidOperationException("You are not the owner of this display");
@@ -170,7 +230,7 @@ public class GroupService : IGroupService
         var view = await _viewService.GetByIdAsync(viewId)
             ?? throw new InvalidOperationException($"View with id: {viewId} not found");
         
-        if(!_userContextProvider.isAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
+        if(!_userContextProvider.IsAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
                 throw new InvalidOperationException("You are not the owner of this group");
         
         if (view.GroupId != null)
@@ -188,7 +248,7 @@ public class GroupService : IGroupService
         var view = await _viewService.GetByIdAsync(viewId)
                    ?? throw new InvalidOperationException($"View with id: {viewId} not found");
         
-        if(!_userContextProvider.isAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
+        if(!_userContextProvider.IsAdmin() && group.UserId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this group");
         
         if (view.GroupId != groupId)

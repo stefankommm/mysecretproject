@@ -30,7 +30,7 @@ using Signee.Services.Areas.User.Services;
 using Signee.Services.Areas.View.Contracts;
 using Signee.Services.Areas.View.Services;
 using Signee.Services.Auth.Contracts;
-using Signee.Services.Auth.Services;
+using Signee.Services.Areas.Auth.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

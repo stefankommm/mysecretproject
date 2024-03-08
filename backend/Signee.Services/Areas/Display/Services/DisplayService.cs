@@ -30,7 +30,7 @@ public class DisplayService : IDisplayService
     {
         var display = await _displayRepository.GetByIdAsync(id);
 
-        if (!_userContextProvider.isAdmin())
+        if (!_userContextProvider.IsAdmin())
         {
             if(display == null) 
                 throw new InvalidOperationException($"Display with id: {id} not found!");
@@ -48,7 +48,7 @@ public class DisplayService : IDisplayService
     {
         var display = await _displayRepository.GetByIdAsync(id)
                       ?? throw new InvalidOperationException($"Display with id: {id} not found!");
-        if (!_userContextProvider.isAdmin() && display.UserId != _userContextProvider.GetCurrentUserId())
+        if (!_userContextProvider.IsAdmin() && display.UserId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this display!");
         
         display.PairingCode = Guid.NewGuid();
@@ -85,7 +85,7 @@ public class DisplayService : IDisplayService
     /// <returns></returns>
     public async Task<IEnumerable<Display>> GetAllAsync()
     {
-        if (_userContextProvider.isAdmin())
+        if (_userContextProvider.IsAdmin())
             return await _displayRepository.GetAllAsync();    
         
         return await _displayRepository.FindAllAsync(d => d.UserId == _userContextProvider.GetCurrentUserId());
@@ -96,7 +96,7 @@ public class DisplayService : IDisplayService
         var display = await _displayRepository.GetByIdAsync(id);
         if (display == null)
             throw new InvalidOperationException($"Display with id: {id} not found!");
-        if (!_userContextProvider.isAdmin() && display.UserId != _userContextProvider.GetCurrentUserId())
+        if (!_userContextProvider.IsAdmin() && display.UserId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this display!");
         
         return display;
@@ -104,6 +104,8 @@ public class DisplayService : IDisplayService
 
     public async Task AddAsync(Display display)
     {
+        if(display.GroupId == null)
+            throw new InvalidOperationException("Display must be added also to a group!");
         if (display.Id != null)
             display.Id = null;
         
@@ -128,7 +130,7 @@ public class DisplayService : IDisplayService
             throw new InvalidOperationException("Display Id is null -> Cannot update display!");
         var d = await GetByIdAsync(display.Id ?? string.Empty);
         var groupOfTheDisplay = await _groupService.GetByIdAsync(d.GroupId) ?? null;
-        var isAdmin = _userContextProvider.isAdmin();
+        var isAdmin = _userContextProvider.IsAdmin();
         var userId = _userContextProvider.GetCurrentUserId();
         
         // Validate if the Display exists ?not => throw exception
@@ -152,7 +154,7 @@ public class DisplayService : IDisplayService
     public async Task DeleteByIdAsync(string id)
     {
         var userId = _userContextProvider.GetCurrentUserId();
-        var isAdmin = _userContextProvider.isAdmin();
+        var isAdmin = _userContextProvider.IsAdmin();
         
         if (id == null)
             throw new InvalidOperationException("Display Id is null -> Cannot delete display!");
