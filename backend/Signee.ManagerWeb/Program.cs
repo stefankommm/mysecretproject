@@ -115,7 +115,6 @@ builder.Services.AddScoped<IViewService>(s => new ViewService(s.GetRequiredServi
 builder.Services.AddScoped<IDisplayRepository>(s => new DisplayRepository(s.GetRequiredService<ApplicationDbContext>()));
 builder.Services.AddScoped<IDisplayService>(s => new DisplayService(s.GetRequiredService<IDisplayRepository>(), s.GetRequiredService<IViewService>(), s.GetRequiredService<IGroupService>(), s.GetRequiredService<IUserContextProvider>()));
 
-
 // Support string to enum conversions in the API
 builder.Services.AddControllers().AddJsonOptions(opt =>
 {

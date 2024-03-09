@@ -1,10 +1,13 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Signee.Domain.Entities.Common;
+using Signee.Domain.Exceptions;
 using Signee.Domain.RepositoryContracts.Common;
 
 namespace Signee.Infrastructure.PostgreSql.Common;
 
-public class PostgreSqlRepository<T> : IGenericRepository<T> where T : class
+public class PostgreSqlRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly DbSet<T> _dbSet;
@@ -20,13 +23,15 @@ public class PostgreSqlRepository<T> : IGenericRepository<T> where T : class
     public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate) => await _dbSet.Where(predicate).ToListAsync();
     
     public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate) => (await FindAllAsync(predicate)).FirstOrDefault();
-    
-    public async Task<T?> GetByIdAsync(object id) => await _dbSet.FindAsync(id);
-    
-    public async Task<IEnumerable<T>> GetAllByIdAsync(IEnumerable<object> ids)
+
+    public async Task<T> GetByIdAsync(object id)
     {
-        var entities = await Task.WhenAll(ids.Select(id => GetByIdAsync(id)));
-        return entities.Where(entity => entity != null)!;
+        var entity =  await _dbSet.FindAsync(id);
+
+        if (entity == null)
+            throw new EntityNotExistException($"{typeof(T).Name} with ID: {id} does not exist!");
+
+        return entity;
     }
 
     public async Task AddAsync(T entity)
@@ -44,18 +49,23 @@ public class PostgreSqlRepository<T> : IGenericRepository<T> where T : class
     public async Task DeleteByIdAsync(object id)
     {
         var entity = await GetByIdAsync(id);
-        if (entity != null)
-            await DeleteAsync(entity);
+        await DeleteAsync(entity);
     }
     
     public async Task UpdateAsync(T entity)
     {
+        // Checks entity existence
+        await GetByIdAsync(entity.Id);
+        
         _dbSet.Update(entity);
         await SaveChangesTransactionalAsync();
     }
 
     public async Task DeleteAsync(T entity)
     {
+        // Checks entity existence
+        await GetByIdAsync(entity.Id);
+        
         _dbSet.Remove(entity);
         await SaveChangesTransactionalAsync();
     }

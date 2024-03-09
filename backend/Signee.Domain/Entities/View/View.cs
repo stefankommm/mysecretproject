@@ -1,16 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Signee.Domain.Entities.Common;
 
 namespace Signee.Domain.Entities.View;
 using Group;
 using Widget;
 
-public class View
+public class View : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string Id { get; set; } = string.Empty;    
-    
     public string Name { get; set; }
     public DateTime? From { get; set; }
     

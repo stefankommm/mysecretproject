@@ -34,13 +34,7 @@ public class UserService : IUserService
     }
 
     public async Task<ApplicationUser> GetByIdAsync(string id)
-    {
-        var user = await _userRepository.GetByIdAsync(id);
-        if (user == null)
-            throw new InvalidOperationException($"User with id: {id} not found!");
-
-        return user;
-    }
+        => await _userRepository.GetByIdAsync(id);
 
     public async Task<ApplicationUser?> FindByEmailAsync(string email) 
         => await _userRepository.FindByEmailAsync(email);
@@ -51,14 +45,11 @@ public class UserService : IUserService
         return existingUser == null;
     }
 
-    public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password) =>
-        await _userRepository.CreateUserAsync(user, password);
+    public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password) 
+        => await _userRepository.CreateUserAsync(user, password);
 
     public async Task UpdateAsync(ApplicationUser user)
-    {
-        await GetByIdAsync(user.Id); // Checks if user exists and ig not throws exception
-        await _userRepository.UpdateAsync(user);
-    }
+         => await _userRepository.UpdateAsync(user);
     
     public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
         => await _userRepository.CheckPasswordAsync(user, password);

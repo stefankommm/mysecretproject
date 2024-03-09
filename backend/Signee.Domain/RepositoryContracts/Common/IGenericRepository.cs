@@ -33,14 +33,7 @@ public interface IGenericRepository<T> where T : class
     /// </summary>
     /// <param name="id">The identifier of the entity to retrieve.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the entity if found; otherwise, null.</returns>
-    Task<T?> GetByIdAsync(object id);
-
-    /// <summary>
-    /// Retrieves multiple entities of type <typeparamref name="T"/> with the specified identifiers.
-    /// </summary>
-    /// <param name="ids">The identifiers of the entities to retrieve.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the collection of entities found. Null entities are filtered out.</returns>
-    Task<IEnumerable<T>> GetAllByIdAsync(IEnumerable<object> ids);
+    Task<T> GetByIdAsync(object id);
 
     /// <summary>
     /// Adds a new entity of type <typeparamref name="T"/>.

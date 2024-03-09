@@ -1,9 +1,10 @@
+    using System.Net;
     using System.Security.Claims;
     using Microsoft.AspNetCore.Http;
     using Signee.Domain.Identity;
-    using Signee.Services.Auth.Contracts;
+    using Signee.Services.Areas.Auth.Contracts;
 
-    namespace Signee.Services.Auth.Services;
+    namespace Signee.Services.Areas.Auth.Providers;
 
     public class UserContextProvider : IUserContextProvider
     {
@@ -40,8 +41,15 @@
                 return roles;
             }
 
-            public bool isAdmin()
+            public bool isAdmin() => GetCurrentRoles().Contains(Role.Admin);
+
+            public IPAddress? GetIpAddress()
             {
-                return GetCurrentRoles().Contains(Role.Admin);
+                return _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress;
+            }
+
+            public string? GetDeviceViewport()
+            {
+                return _httpContextAccessor.HttpContext?.Request.Headers["Viewport"].ToString();
             }
     }

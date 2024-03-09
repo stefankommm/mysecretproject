@@ -21,7 +21,7 @@ public interface IUserRepository
     /// </summary>
     /// <param name="id">user ID</param>
     /// <returns>ApplicationUser or null if not exists</returns>
-    Task<ApplicationUser?> GetByIdAsync(string id);
+    Task<ApplicationUser> GetByIdAsync(string id);
     
     /// <summary>
     /// Finds a user by their email address.

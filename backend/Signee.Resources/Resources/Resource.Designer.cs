@@ -87,11 +87,11 @@ namespace Signee.Resources.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Používateľ neexistuje..
+        ///   Looks up a localized string similar to Pri vytváraní nového displeja nastala chyba..
         /// </summary>
-        public static string Auth_NoExistentUser {
+        public static string ManagerWeb_CreatingDisplayError {
             get {
-                return ResourceManager.GetString("Auth_NoExistentUser", resourceCulture);
+                return ResourceManager.GetString("ManagerWeb_CreatingDisplayError", resourceCulture);
             }
         }
         
@@ -110,15 +110,6 @@ namespace Signee.Resources.Resources {
         public static string ManagerWeb_DisplaysRetreivalError {
             get {
                 return ResourceManager.GetString("ManagerWeb_DisplaysRetreivalError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pri vytváraní nového displeja nastala chyba..
-        /// </summary>
-        public static string ManagerWeb_ErrorCreatingDisplay {
-            get {
-                return ResourceManager.GetString("ManagerWeb_ErrorCreatingDisplay", resourceCulture);
             }
         }
         

@@ -24,17 +24,13 @@
     <data name="Auth_InvalidLoginCredentials" xml:space="preserve">
         <value>Neplatné přihlašovací údaje.</value>
     </data>
-    <data name="Auth_NoExistentUser" xml:space="preserve">
-        <value>Uživatel neexistuje.
-</value>
-    </data>
     <data name="ManagerWeb_DisplayIdRetreivalError" xml:space="preserve">
         <value>Při načítání displeje s ID: {id} se vyskytla chyba.</value>
     </data>
     <data name="ManagerWeb_DisplaysRetreivalError" xml:space="preserve">
         <value>Při načítání displejů se vyskytla chyba.</value>
     </data>
-    <data name="ManagerWeb_ErrorCreatingDisplay" xml:space="preserve">
+    <data name="ManagerWeb_CreatingDisplayError" xml:space="preserve">
         <value>Při vytváření nového displeje nastala chyba.</value>
     </data>
     <data name="PopulateDb_AdminUserCreationError" xml:space="preserve">

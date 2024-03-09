@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Signee.Domain.Exceptions;
 using Signee.Domain.RepositoryContracts.Areas.Display;
 using Signee.Infrastructure.PostgreSql.Common;
 
@@ -13,7 +14,17 @@ public class DisplayRepository : PostgreSqlRepository<Display>, IDisplayReposito
     {
         _dbContext = dbContext;
     }
-    
+
+    public async Task<Display> GetDisplayByPairingCodeAsync(Guid pairingCode)
+    {
+        var display = await FindAsync(display => display.PairingCode == pairingCode);
+        
+        if (display == null)
+            throw new EntityNotExistException($"Display with pairing code: {pairingCode} does not exist!");
+
+        return display;
+    }
+
     public async Task<IEnumerable<Display>> GetAllByGroupIdAsync(string groupId) 
         => await FindAllAsync(display => display.GroupId == groupId);
 

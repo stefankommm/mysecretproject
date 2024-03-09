@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
 using Signee.Domain.Identity;
 using Signee.Resources.Resources;
 using Signee.Services.Areas.Auth.Contracts;
@@ -6,6 +7,7 @@ using Signee.Services.Areas.Auth.Models;
 
 namespace Signee.ManagerWeb.Controllers;
 
+[ApiVersion( 1.0 )]
 [ApiController]
 [Route("/api/[controller]")]
 public class AuthController : ControllerBase

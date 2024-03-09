@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Signee.Domain.Exceptions;
 using Signee.Domain.Identity;
 using Signee.Domain.RepositoryContracts.Areas.User;
 
@@ -13,11 +14,22 @@ public class UserRepository : IUserRepository
         _userManager = userManager;
     }
 
-    public async Task UpdateAsync(ApplicationUser user) =>
+    public async Task UpdateAsync(ApplicationUser user)
+    {
+        await GetByIdAsync(user.Id); // Check if user exists and if not throw exception
         await _userManager.UpdateAsync(user);
+    }
+        
 
-    public async Task<ApplicationUser?> GetByIdAsync(string id)
-        => await _userManager.FindByIdAsync(id);
+    public async Task<ApplicationUser> GetByIdAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        
+        if (user == null)
+            throw new EntityNotExistException(typeof(ApplicationUser).ToString());
+
+        return user;
+    }
 
     public async Task<ApplicationUser?> FindByEmailAsync(string email)
         => await _userManager.FindByEmailAsync(email);

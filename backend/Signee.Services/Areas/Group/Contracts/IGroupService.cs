@@ -12,23 +12,9 @@ public interface IGroupService
     
     Task<Group> GetByIdAsync(string id);
     
-    Task<IEnumerable<Group>> GetAllWithSingleDisplayAsync();
-
-    Task<IEnumerable<Group>> GetAllWithMultipleDisplaysAsync();
-    
-    Task UpdateAsync(Group g);
+    Task<Group> UpdateAsync(Group g);
     
     Task DeleteByIdAsync(string id);
-    
-    /// ----- USER METHODS -----
-    
-    /// <param name="userId"></param>
-    /// <returns>All groups that belong to user with give ID</returns>
-    Task<IEnumerable<Group>> GetByUserIdAsync(string userId);
-    
-    /// <param name="displayId"></param>
-    /// <returns>All groups that contain display with given ID</returns>
-    Task<Group> GetByDisplayIdAsync(string displayId);
     
     /// ----- DISPLAY METHODS -----
 
@@ -37,10 +23,6 @@ public interface IGroupService
     Task RemoveDisplayFromGroupAsync(string groupId, string displayId);
     
     /// ----- VIEW METHODS -----
-     
-    Task AddViewToGroupAsync(string groupId, string viewId);
-    
-    Task RemoveViewFromGroupAsync(string groupId, string viewId);
     
     Task<View?> GetCurrentViewAsync(string groupId);
 }

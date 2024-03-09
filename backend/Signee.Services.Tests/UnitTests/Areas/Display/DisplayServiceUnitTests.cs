@@ -188,7 +188,7 @@ public class DisplayServiceUnitTests
                 groupServiceMock.Object);
 
             // Act
-            var result = await displayService.GetCurrentViewFromDeviceAsync(displayId, ipAddress, viewPort);
+            var result = await displayService.GetCurrentViewFromDeviceAsync(displayId);
 
             // Assert
             ClassicAssert.AreEqual(expectedView, result);

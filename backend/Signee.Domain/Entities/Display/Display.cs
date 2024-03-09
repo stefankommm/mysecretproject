@@ -1,18 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
+using Signee.Domain.Entities.Common;
 using Signee.Domain.Identity;
 
 namespace Signee.Domain.Entities.Display;
 
 using Group = Group.Group;
 
-public class Display
+public class Display : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string? Id { get; set; }
-
     [MaxLength(20, ErrorMessage = "The Name field cannot exceed 20 characters.")]
     public string Name { get; set; } = string.Empty;
     

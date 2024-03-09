@@ -5,6 +5,8 @@ using Display = Domain.Entities.Display.Display;
 
 public interface IDisplayRepository : IGenericRepository<Display>
 {
+    Task<Display> GetDisplayByPairingCodeAsync(Guid pairingCode);
+    
     Task<IEnumerable<Display>> GetAllByGroupIdAsync(string groupId);
     
     Task<IEnumerable<Display>> GetAllByNameAsync(string name);

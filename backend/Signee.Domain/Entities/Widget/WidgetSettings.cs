@@ -1,14 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Signee.Domain.Entities.Common;
 
 namespace Signee.Domain.Entities.Widget;
 
-public class WidgetSettings
+public class WidgetSettings : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string Id { get; set; } = string.Empty;
-    
     public bool required { get; set; } = false;  
     
     public string name { get; set; }

@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Signee.Domain.Identity;
 using Signee.Services.Areas.User.Contracts;
 
 namespace Signee.ManagerWeb.Controllers;
@@ -22,6 +23,14 @@ public class UserController : ControllerBase
     public async Task<ActionResult<string>> WhoAmI()
     {
         return await _userService.WhoAmIAsync();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApplicationUser>> GetUserById(string id)
+    {
+       
+            var user = await _userService.GetByIdAsync(id);
+            return Ok(user);
     }
     
 }

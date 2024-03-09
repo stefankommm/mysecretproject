@@ -1,12 +1,10 @@
-﻿using System.Net;
-using Signee.Domain.RepositoryContracts.Areas.Display;
+﻿using Signee.Domain.RepositoryContracts.Areas.Display;
+using Signee.Services.Areas.Auth.Contracts;
 using Signee.Services.Areas.Display.Contracts;
 using Signee.Services.Areas.Group.Contracts;
 using Signee.Services.Areas.View.Contracts;
-using Signee.Services.Auth.Contracts;
 
 namespace Signee.Services.Areas.Display.Services;
-
 using Display = Domain.Entities.Display.Display;
 using View = Domain.Entities.View.View;
 
@@ -16,73 +14,73 @@ public class DisplayService : IDisplayService
     private readonly IGroupService _groupService;
     private readonly IViewService _viewService;
     private readonly IUserContextProvider _userContextProvider;
+    
+    // display<-group->views   views->widgety 
 
-    public DisplayService(IDisplayRepository displayRepository, IViewService viewService, IGroupService groupService, IUserContextProvider userContextProvider)
+    public DisplayService(IDisplayRepository displayRepository, IGroupService groupService, IViewService viewService, IUserContextProvider userContextProvider)
     {
         _displayRepository = displayRepository;
-        _viewService = viewService;
         _groupService = groupService;
+        _viewService = viewService;
         _userContextProvider = userContextProvider;
     }
 
     //#TODO not complete yet 
-    public async Task<bool> IsOnlineAsync(string id)
-    {
-        var display = await _displayRepository.GetByIdAsync(id);
+    // public async Task<bool> IsOnlineAsync(string id)
+    // {
+    //     var display = await _displayRepository.GetByIdAsync(id);
+    //
+    //     if (!_userContextProvider.isAdmin())
+    //     {
+    //         if (display.UserId != _userContextProvider.GetCurrentUserId())
+    //             throw new InvalidOperationException("You are not the owner of this display!");
+    //     }
+    //     
+    //     return display?.LastOnline > DateTime.Now.AddMinutes(-60);
+    // }
 
-        if (!_userContextProvider.isAdmin())
-        {
-            if(display == null) 
-                throw new InvalidOperationException($"Display with id: {id} not found!");
-            if (display.UserId != _userContextProvider.GetCurrentUserId())
-                throw new InvalidOperationException("You are not the owner of this display!");
-        }
-        
-        if (display == null)
-            throw new InvalidOperationException($"Display with id: {id} not found!");
-        
-        return display?.LastOnline > DateTime.Now.AddMinutes(-60);
+    /// <summary>
+    /// Checks if user has sufficient privileges (owns display or is admin)
+    /// to be able to access/manipulate it
+    /// </summary>
+    /// <param name="display"></param>
+    /// <exception cref="InvalidOperationException"></exception>
+    private void CheckDisplayOwnership(Display display)
+    {
+        if (!_userContextProvider.isAdmin()  && display.UserId != _userContextProvider.GetCurrentUserId())
+            throw new InvalidOperationException("You are not the owner of this display!"); // TODO create ownership exception and return localized resource
     }
 
-    public async Task<string> RegeneratePairingCodeAsync(string id)
+    public async Task<Display> RegeneratePairingCodeAsync(string id)
     {
-        var display = await _displayRepository.GetByIdAsync(id)
-                      ?? throw new InvalidOperationException($"Display with id: {id} not found!");
-        if (!_userContextProvider.isAdmin() && display.UserId != _userContextProvider.GetCurrentUserId())
-            throw new InvalidOperationException("You are not the owner of this display!");
+        var display = await _displayRepository.GetByIdAsync(id);
+        CheckDisplayOwnership(display);
         
         display.PairingCode = Guid.NewGuid();
         await UpdateAsync(display);
-        return display.PairingCode.ToString()!;
+        
+        return display;
     }
-
-    public async Task<View?> GetCurrentViewAsync(string id, bool fromDevice = false)
+    
+    public async Task<View?> GetCurrentViewFromDeviceAsync(string pairingCode)
     {
-        //TODO
-        var display = await _displayRepository.GetByIdAsync(id);
-        throw new NotImplementedException();
-    }
-
-    public async Task<View?> GetCurrentViewFromDeviceAsync(string id, IPAddress ipAddress, string viewPort)
-    {
-        var display = await _displayRepository.GetByIdAsync(id)
-                      ?? throw new InvalidOperationException($"Display with id: {id} not found!");
+        var display = await _displayRepository.GetDisplayByPairingCodeAsync(new Guid(pairingCode));
 
         if (display.GroupId == null)
-            throw new InvalidOperationException($"Display with id: {id} is not yet in any group!");
+            throw new InvalidOperationException($"Display with pairing code {pairingCode} is not yet in any group!");
 
         // If the devices fetches this route -> service.. we know the display is online, its IP and ViewPort
-        display.IpAddress = ipAddress;
-        display.ViewPort = viewPort;
+        display.IpAddress = _userContextProvider.GetIpAddress();
+        display.ViewPort = _userContextProvider.GetDeviceViewport();
         display.LastOnline = DateTime.Now;
         await _displayRepository.UpdateAsync(display);
 
         return await _groupService.GetCurrentViewAsync(display?.GroupId!);
     }
+    
     /// <summary>
     /// Gets all displays asynchronously.(User-Owned or Admin-All)
     /// </summary>
-    /// <returns></returns>
     public async Task<IEnumerable<Display>> GetAllAsync()
     {
         if (_userContextProvider.isAdmin())
@@ -94,25 +92,20 @@ public class DisplayService : IDisplayService
     public async Task<Display> GetByIdAsync(string id)
     {
         var display = await _displayRepository.GetByIdAsync(id);
-        if (display == null)
-            throw new InvalidOperationException($"Display with id: {id} not found!");
-        if (!_userContextProvider.isAdmin() && display.UserId != _userContextProvider.GetCurrentUserId())
-            throw new InvalidOperationException("You are not the owner of this display!");
+        CheckDisplayOwnership(display);
         
         return display;
     }
 
     public async Task AddAsync(Display display)
     {
-        if (display.Id != null)
-            display.Id = null;
-        
+        display.Id = string.Empty;
         display.UserId = _userContextProvider.GetCurrentUserId();
         
-        // #IOI1 - V jednej Groupe nemozu byt dva displeje s identickym nazvom
+        // #IOI1 - Displays within one group must have unique names
         if (display.GroupId != null)
         {
-            var group = await _groupService.GetByIdAsync(display.GroupId);
+            var group = await _groupRepository.GetByIdAsync(display.GroupId);
             if (group.Displays.Any(x => x.Name == display.Name))
                 throw new InvalidOperationException($"Display with name: {display.Name} already exists in the group!");
         }
@@ -120,24 +113,24 @@ public class DisplayService : IDisplayService
         await _displayRepository.AddAsync(display);
     }
 
-    public async Task UpdateAsync(Display display)
+    public async Task UpdateAsync(Display updatedDisplay)
     {
         // #IOI1 - V jednej Groupe nemozu byt dva displeje s identickym nazvom
-        // If the display Id is null => throw exception
-        if (display.Id == null)
-            throw new InvalidOperationException("Display Id is null -> Cannot update display!");
-        var d = await GetByIdAsync(display.Id ?? string.Empty);
-        var groupOfTheDisplay = await _groupService.GetByIdAsync(d.GroupId) ?? null;
+
+        var currentDisplay = await _displayRepository.GetByIdAsync(updatedDisplay.Id);
+        CheckDisplayOwnership(currentDisplay);
+
+        
+        var currentDisplayGroup = currentDisplay.Group;
+        
+        
+        // Check authorization constrains
         var isAdmin = _userContextProvider.isAdmin();
         var userId = _userContextProvider.GetCurrentUserId();
-        
-        // Validate if the Display exists ?not => throw exception
-        if (d == null)
-            throw new InvalidOperationException($"Display with id: {display.Id} not found => Cannot update display!");
 
         if (!isAdmin)
         {
-            if(display.UserId != userId)
+            if(updatedDisplay.UserId != userId)
                 throw new InvalidOperationException("You can't change the owner of the display!");
             // Validate if the name changed || groupId changed ?yes => check if the new name is unique in the group
             if (groupOfTheDisplay != null && (display.Name != d.Name || display.GroupId != d.GroupId))
@@ -151,16 +144,8 @@ public class DisplayService : IDisplayService
 
     public async Task DeleteByIdAsync(string id)
     {
-        var userId = _userContextProvider.GetCurrentUserId();
-        var isAdmin = _userContextProvider.isAdmin();
-        
-        if (id == null)
-            throw new InvalidOperationException("Display Id is null -> Cannot delete display!");
-        var display = await _displayRepository.GetByIdAsync(id) 
-                      ?? throw new InvalidOperationException($"Display with id: {id} not found => Cannot delete display!");
-
-        if (!isAdmin && display.UserId != userId)
-            throw new InvalidOperationException("You are not the owner of this display!");
+        var display = await _displayRepository.GetByIdAsync(id);
+        CheckDisplayOwnership(display);
         
         await _displayRepository.DeleteByIdAsync(id);
     }

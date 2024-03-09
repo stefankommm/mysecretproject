@@ -38,7 +38,7 @@ public class DisplayController : ControllerBase
         catch (Exception ex)
         {
             // TODO log exception
-            return BadRequest(new { message = Resource.ManagerWeb_ErrorCreatingDisplay });
+            return BadRequest(new { message = Resource.ManagerWeb_CreatingDisplayError });
         }
     }
     

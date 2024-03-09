@@ -71,10 +71,10 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+app.UseRequestLocalization(requestLocalizationOptions);
 app.UseCors("AllowSpecificOrigin");
 
 // Add SignalR websocket hub to application pipeline
 app.MapHub<DisplayMessageHub>("display");
 
-app.UseRequestLocalization(requestLocalizationOptions);
 app.Run();

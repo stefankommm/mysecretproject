@@ -51,7 +51,7 @@ public interface IDisplayService
     /// Generates new Parining code for the given display asynchronously.
     /// <param name="id">Id of the given display</param>
     /// <returns>GUID Pairing code</returns>
-    Task<string> RegeneratePairingCodeAsync(string id);
+    Task<Display> RegeneratePairingCodeAsync(string id);
     
     /// <summary>
     /// Gets current view of the display asynchronously.
@@ -62,10 +62,10 @@ public interface IDisplayService
     /// <summary>
     /// Gets current view of the display asynchronously.
     /// Used only by devices
-    /// <param name="id">Id of the given display</param>
+    /// <param name="pairingCode">Id of the given display</param>
     /// <param name="ipAddress">IP address of the device calling the request</param>
     /// <param name="viewPort">ViewPort of the device calling the request</param>
-    Task<View?> GetCurrentViewFromDeviceAsync(string id, IPAddress ipAddress, string viewPort);
+    Task<View?> GetCurrentViewFromDeviceAsync(string pairingCode);
     
     
 }

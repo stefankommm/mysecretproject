@@ -43,13 +43,13 @@ public class AuthService : IAuthService
         if (user == null)
         {
             _logger.LogError("User does not exist.");
-            throw new InvalidOperationException(message: Resource.Auth_NoExistentUser);
+            throw new InvalidOperationException(message: Resource.Auth_InvalidLoginCredentials);
         }
 
         var isPasswordValid = await _userService.CheckPasswordAsync(user, authRequest.Password ?? throw new ArgumentNullException());
         if (!isPasswordValid)
         {
-            _logger.LogError("Invalid login credentials.");
+            _logger.LogError("Wrong password.");
             throw new InvalidOperationException(message: Resource.Auth_InvalidLoginCredentials);
         }
 
