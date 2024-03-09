@@ -14,7 +14,7 @@ namespace Signee.Services.Areas.Auth.Contracts
         // Gets a list of roles associated with the current user
         IEnumerable<Role> GetCurrentRoles();
         
-        bool isAdmin();
+        bool IsAdmin();
 
         IPAddress? GetIpAddress();
 

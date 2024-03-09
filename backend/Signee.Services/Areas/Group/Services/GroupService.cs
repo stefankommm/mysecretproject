@@ -60,14 +60,25 @@ public class GroupService : IGroupService
         await _groupRepository.AddAsync(group);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>Users groups (All if ADMIN)</returns>
     public async Task<IEnumerable<Group>> GetAllAsync()
     {
-        if(_userContextProvider.isAdmin())
+        if(_userContextProvider.IsAdmin())
             return await _groupRepository.GetAllAsync();
         
         return await _groupRepository.FindAllAsync(g => g.UserId == _userContextProvider.GetCurrentUserId());
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>Group with Given ID if the owner is calling (ADMIN -> returns if exist)</returns>
+    /// <exception cref="InvalidOperationException">ID not Found</exception>
+    /// <exception cref="InvalidOperationException">User is not owner of the display</exception>
     public async Task<Group> GetByIdAsync(string id)
     {
         var group = await _groupRepository.GetByIdAsync(id);
@@ -98,6 +109,12 @@ public class GroupService : IGroupService
         return await _groupRepository.GetByIdAsync(updatedGroup.Id);
     }
 
+    /// <summary>
+    /// USER: Deletes the group if the user is the owner
+    /// ADMIN: Deletes the group if it exists
+    /// </summary>
+    /// <param name="id"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task DeleteByIdAsync(string id)
     {
         var group = await GetByIdAsync(id);
@@ -114,6 +131,13 @@ public class GroupService : IGroupService
         await _groupRepository.DeleteByIdAsync(id);
     }
 
+    /// <summary>
+    /// USER: Gets the group with the given view ID if the user is the owner and v exists
+    /// ADMIN: Gets the group with the given view ID if exists
+    /// </summary>
+    /// <param name="groupId"></param>
+    /// <param name="displayId"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task AddDisplayToGroupAsync(string groupId, string displayId)
     {
         var display = await _displayRepository.GetByIdAsync(displayId);
@@ -129,6 +153,14 @@ public class GroupService : IGroupService
         await _groupRepository.UpdateAsync(group);
     }
 
+    
+    /// <summary>
+    /// USER: Removes the display from the group if the user is the owner and d exists
+    /// ADMIN: Removes the display from the group if exists
+    /// </summary>
+    /// <param name="groupId"></param>
+    /// <param name="displayId"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task RemoveDisplayFromGroupAsync(string groupId, string displayId)
     {
         var display = await _displayRepository.GetByIdAsync(displayId);
