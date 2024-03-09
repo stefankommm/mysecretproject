@@ -1,7 +1,7 @@
 using Signee.Domain.RepositoryContracts.Areas.View;
+using Signee.Services.Areas.Auth.Contracts;
 using Signee.Services.Areas.Group.Contracts;
 using Signee.Services.Areas.View.Contracts;
-using Signee.Services.Auth.Contracts;
 
 namespace Signee.Services.Areas.View.Services;
 using View = Domain.Entities.View.View;

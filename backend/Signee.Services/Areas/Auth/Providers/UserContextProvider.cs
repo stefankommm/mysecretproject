@@ -41,7 +41,7 @@
                 return roles;
             }
 
-            public bool isAdmin() => GetCurrentRoles().Contains(Role.Admin);
+            public bool IsAdmin() => GetCurrentRoles().Contains(Role.Admin);
 
             public IPAddress? GetIpAddress()
             {

@@ -1,11 +1,15 @@
+
+
+
 using Signee.Domain.RepositoryContracts.Areas.Display;
 using Signee.Domain.RepositoryContracts.Areas.Group;
 using Signee.Domain.RepositoryContracts.Areas.View;
+using Signee.Services.Areas.Auth.Contracts;
 using Signee.Services.Areas.Group.Contracts;
-using Signee.Services.Auth.Contracts;
 
 namespace Signee.Services.Areas.Group.Services;
 
+using Domain.Entities.Common;
 using Group = Domain.Entities.Group.Group;
 using View = Domain.Entities.View.View;
 using Display = Domain.Entities.Display.Display;
@@ -34,7 +38,7 @@ public class GroupService : IGroupService
     /// <exception cref="InvalidOperationException"></exception>
     private void CheckGroupOwnership(Group group)
     {
-        if (!_userContextProvider.isAdmin()  && group.UserId != _userContextProvider.GetCurrentUserId())
+        if (!_userContextProvider.IsAdmin()  && group.UserId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this group!"); // TODO create ownership exception and return localized resource
     }
     
@@ -47,7 +51,7 @@ public class GroupService : IGroupService
     /// <exception cref="InvalidOperationException"></exception>
     private void CheckDisplayOwnership(Display display)
     {
-        if (!_userContextProvider.isAdmin()  && display.UserId != _userContextProvider.GetCurrentUserId())
+        if (!_userContextProvider.IsAdmin()  && display.Id != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this display!"); // TODO create ownership exception and return localized resource
     }
 
@@ -93,7 +97,7 @@ public class GroupService : IGroupService
         var oldGroup = await GetByIdAsync(updatedGroup.Id);
         CheckGroupOwnership(oldGroup);
 
-        if (!_userContextProvider.isAdmin())
+        if (!_userContextProvider.IsAdmin())
         {
             var currentUserId = _userContextProvider.GetCurrentUserId();
             

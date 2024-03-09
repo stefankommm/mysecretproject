@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+//#Todo: Add _userContextProvider and appropriate methods
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Signee.Domain.Identity;
 using Signee.Domain.RepositoryContracts.Areas.User;
-using Signee.Services.Auth.Contracts;
 using Signee.Resources.Resources;
+using Signee.Services.Areas.Auth.Contracts;
 using Signee.Services.Areas.User.Contracts;
 
-namespace Signee.Services.Areas.User.Services;
-
-//#Todo: Add _userContextProvider and appropriate methods
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;

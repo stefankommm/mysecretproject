@@ -12,7 +12,6 @@ public class DisplayService : IDisplayService
 {
     private readonly IDisplayRepository _displayRepository;
     private readonly IGroupService _groupService;
-    private readonly IViewService _viewService;
     private readonly IUserContextProvider _userContextProvider;
     
     // display<-group->views   views->widgety 
@@ -21,7 +20,6 @@ public class DisplayService : IDisplayService
     {
         _displayRepository = displayRepository;
         _groupService = groupService;
-        _viewService = viewService;
         _userContextProvider = userContextProvider;
     }
 
@@ -30,7 +28,7 @@ public class DisplayService : IDisplayService
     // {
     //     var display = await _displayRepository.GetByIdAsync(id);
     //
-    //     if (!_userContextProvider.isAdmin())
+    //     if (!_userContextProvider.IsAdmin())
     //     {
     //         if (display.UserId != _userContextProvider.GetCurrentUserId())
     //             throw new InvalidOperationException("You are not the owner of this display!");
@@ -47,8 +45,13 @@ public class DisplayService : IDisplayService
     /// <exception cref="InvalidOperationException"></exception>
     private void CheckDisplayOwnership(Display display)
     {
-        if (!_userContextProvider.isAdmin()  && display.UserId != _userContextProvider.GetCurrentUserId())
+        if (!_userContextProvider.IsAdmin()  && display.UserId != _userContextProvider.GetCurrentUserId())
             throw new InvalidOperationException("You are not the owner of this display!"); // TODO create ownership exception and return localized resource
+    }
+
+    public async Task<bool> IsOnlineAsync(string id)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<Display> RegeneratePairingCodeAsync(string id)
@@ -61,7 +64,12 @@ public class DisplayService : IDisplayService
         
         return display;
     }
-    
+
+    public async Task<View?> GetCurrentViewAsync(string id, bool fromDevice = false)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<View?> GetCurrentViewFromDeviceAsync(string pairingCode)
     {
         var display = await _displayRepository.GetDisplayByPairingCodeAsync(new Guid(pairingCode));
@@ -83,7 +91,7 @@ public class DisplayService : IDisplayService
     /// </summary>
     public async Task<IEnumerable<Display>> GetAllAsync()
     {
-        if (_userContextProvider.isAdmin())
+        if (_userContextProvider.IsAdmin())
             return await _displayRepository.GetAllAsync();    
         
         return await _displayRepository.FindAllAsync(d => d.UserId == _userContextProvider.GetCurrentUserId());
@@ -105,7 +113,7 @@ public class DisplayService : IDisplayService
         // #IOI1 - Displays within one group must have unique names
         if (display.GroupId != null)
         {
-            var group = await _groupRepository.GetByIdAsync(display.GroupId);
+            var group = await _groupService.GetByIdAsync(display.GroupId);
             if (group.Displays.Any(x => x.Name == display.Name))
                 throw new InvalidOperationException($"Display with name: {display.Name} already exists in the group!");
         }
@@ -113,33 +121,33 @@ public class DisplayService : IDisplayService
         await _displayRepository.AddAsync(display);
     }
 
+    //#TODO
     public async Task UpdateAsync(Display updatedDisplay)
     {
         // #IOI1 - V jednej Groupe nemozu byt dva displeje s identickym nazvom
 
         var currentDisplay = await _displayRepository.GetByIdAsync(updatedDisplay.Id);
         CheckDisplayOwnership(currentDisplay);
-
         
         var currentDisplayGroup = currentDisplay.Group;
         
         
         // Check authorization constrains
-        var isAdmin = _userContextProvider.isAdmin();
+        var IsAdmin = _userContextProvider.IsAdmin();
         var userId = _userContextProvider.GetCurrentUserId();
 
-        if (!isAdmin)
-        {
-            if(updatedDisplay.UserId != userId)
-                throw new InvalidOperationException("You can't change the owner of the display!");
-            // Validate if the name changed || groupId changed ?yes => check if the new name is unique in the group
-            if (groupOfTheDisplay != null && (display.Name != d.Name || display.GroupId != d.GroupId))
-                if (groupOfTheDisplay.Displays.Any(x => x.Name == display.Name))
-                    throw new InvalidOperationException(
-                        $"Display with name: {display.Name} already exists in the group!");
-        }
+        // if (!IsAdmin)
+        // {
+        //     if(updatedDisplay.UserId != userId)
+        //         throw new InvalidOperationException("You can't change the owner of the display!");
+        //     // Validate if the name changed || groupId changed ?yes => check if the new name is unique in the group
+        //     if (groupOfTheDisplay != null && (display.Name != d.Name || display.GroupId != d.GroupId))
+        //         if (groupOfTheDisplay.Displays.Any(x => x.Name == display.Name))
+        //             throw new InvalidOperationException(
+        //                 $"Display with name: {display.Name} already exists in the group!");
+        // }
 
-        await _displayRepository.UpdateAsync(display);
+        await _displayRepository.UpdateAsync(updatedDisplay);
     }
 
     public async Task DeleteByIdAsync(string id)

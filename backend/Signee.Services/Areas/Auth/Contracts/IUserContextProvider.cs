@@ -1,26 +1,25 @@
 using System.Net;
 using Signee.Domain.Identity;
 
-namespace Signee.Services.Areas.Auth.Contracts
+namespace Signee.Services.Areas.Auth.Contracts;
 
+
+public interface IUserContextProvider
 {
-    public interface IUserContextProvider
-    {
-         /// <summary>
-         /// Gets the current user's identifier
-         /// </summary>
-        string GetCurrentUserId();
+     /// <summary>
+     /// Gets the current user's identifier
+     /// </summary>
+    string GetCurrentUserId();
 
-        // Gets a list of roles associated with the current user
-        IEnumerable<Role> GetCurrentRoles();
-        
-        bool IsAdmin();
+    // Gets a list of roles associated with the current user
+    IEnumerable<Role> GetCurrentRoles();
+    
+    bool IsAdmin();
 
-        IPAddress? GetIpAddress();
+    IPAddress? GetIpAddress();
 
-        string? GetDeviceViewport();
+    string? GetDeviceViewport();
 
-        // You can add more methods related to the user context as needed
-        // For example, getting permissions or other user-specific information
-    }
+    // You can add more methods related to the user context as needed
+    // For example, getting permissions or other user-specific information
 }
