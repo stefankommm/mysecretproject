@@ -4,6 +4,7 @@ using Signee.Domain.Entities.Common;
 
 namespace Signee.Domain.Entities.Widget;
 using View = Domain.Entities.View.View;
+using WidgetSettings = Domain.Entities.WidgetSettings.WidgetSettings;
 
 public class Widget : BaseEntity
 {

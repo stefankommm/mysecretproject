@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Signee.Domain.Entities.Display;
 using Signee.Domain.Entities.Group;
 using Signee.Domain.Entities.Widget;
+using Signee.Domain.Entities.WidgetSettings;
 using Signee.Domain.Identity;
 
 namespace Signee.Infrastructure.PostgreSql;
