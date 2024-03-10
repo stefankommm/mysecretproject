@@ -1,23 +1,24 @@
     using NUnit.Framework;
-    using Microsoft.AspNetCore.Mvc.Testing;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using Signee.ManagerWeb.Controllers; // Replace with your actual API namespace
     using System.Text.Json;
     using System.Text;
-    using Microsoft.AspNetCore.Hosting;
+    using Newtonsoft.Json.Linq;
     using NUnit.Framework.Legacy;
+    using Signee.ManagerWeb.Models.Group;
+    using Signee.Services.Areas.Auth.Models;
 
-    
+    [TestFixture]
     public class DisplayControllerAPITest
     {
         private HttpClient _client;
-
+        private const string BASE_URL = "http://localhost:5140";
+        
         [OneTimeSetUp]
         public void Setup()
         {
-            var factory = new WebApplicationFactory<Signee.ManagerWeb.Program>();
-            _client = factory.CreateClient();
+            _client = new HttpClient
+            {
+                BaseAddress = new System.Uri(BASE_URL)
+            };
         }
 
         private async Task<string> AuthenticateAsync()
@@ -27,8 +28,10 @@
             var loginResponse = await _client.PostAsync("/api/auth/login", loginContent);
             ClassicAssert.IsTrue(loginResponse.IsSuccessStatusCode);
             var loginResponseBody = await loginResponse.Content.ReadAsStringAsync();
-            var loginResult = JsonSerializer.Deserialize<dynamic>(loginResponseBody);
-            string token = loginResult.userData.token;
+            var loginResponseJsonObject = JObject.Parse(loginResponseBody);
+            var userData = loginResponseJsonObject["userData"].ToString();
+            var loginResult = JsonSerializer.Deserialize<AuthResponseApi>(userData);
+            string token = loginResult.Token;
             return token;
         }
 
@@ -45,8 +48,8 @@
             var groupResponse = await _client.PostAsync("/api/group/", groupContent);
             ClassicAssert.IsTrue(groupResponse.IsSuccessStatusCode);
             var groupResponseBody = await groupResponse.Content.ReadAsStringAsync();
-            var groupResult = JsonSerializer.Deserialize<dynamic>(groupResponseBody);
-            string groupId = groupResult.id;
+            var groupResult = JsonSerializer.Deserialize<GroupResponseApi>(groupResponseBody);
+            string groupId = groupResult.Id;
 
             // Add display with group ID
             var displayDataWithId = new { name = "displej-with-id-001", groupId = groupId };
@@ -55,7 +58,7 @@
             ClassicAssert.IsTrue(displayResponseWithId.IsSuccessStatusCode);
 
             // Add display without group ID
-            var displayDataWithoutId = new { name = "displej-without-id-001", groupId = "" };
+            var displayDataWithoutId = new { name = "without-id-001" };
             var displayContentWithoutId = new StringContent(JsonSerializer.Serialize(displayDataWithoutId), Encoding.UTF8, "application/json");
             var displayResponseWithoutId = await _client.PostAsync("/api/display", displayContentWithoutId);
             ClassicAssert.IsTrue(displayResponseWithoutId.IsSuccessStatusCode);

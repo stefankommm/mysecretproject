@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Signee.ManagerWeb.Models.Display;
 
 namespace Signee.ManagerWeb.Models.Group;
@@ -5,10 +6,15 @@ using Group = Domain.Entities.Group.Group;
 
 public class GroupResponseApi
 {
+    [JsonPropertyName("id")]
     public string Id { get; set; }
+    [JsonPropertyName("name")]
     public string Name { get; set; }
+    [JsonPropertyName("displays")]
     public IEnumerable<DisplayResponseApi> Displays { get; set; }
+    [JsonPropertyName("viewIds")]
     public IEnumerable<string> ViewIds { get; set; }
+    
 
     /// <summary>
     /// Maps domain model Group to GroupResponseApi model 
