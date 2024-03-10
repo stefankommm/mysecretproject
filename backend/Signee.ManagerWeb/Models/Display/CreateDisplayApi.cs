@@ -17,7 +17,7 @@ public class CreateDisplayApi
         return new Display
         {
             Name = displayApi.Name,
-            GroupId = displayApi.GroupId ?? null
+            GroupId = displayApi.GroupId
         };
     }
 }

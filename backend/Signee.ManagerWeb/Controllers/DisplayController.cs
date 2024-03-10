@@ -33,7 +33,7 @@ public class DisplayController : ControllerBase
             await _displayService.AddAsync(display);
             var response = DisplayResponseApi.FromDomainModel(display);
             
-            return CreatedAtAction(nameof(GetDisplay), response);
+            return CreatedAtAction(nameof(GetDisplay), new { id = display.Id }, response);
         }
         catch (Exception ex)
         {
