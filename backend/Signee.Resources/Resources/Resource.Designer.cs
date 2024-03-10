@@ -96,7 +96,16 @@ namespace Signee.Resources.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pri načítavaní displeja s ID: {id} sa vyskytla chyba..
+        ///   Looks up a localized string similar to Pri vymazávaní displeja s ID: {0} sa vyskytla chyba..
+        /// </summary>
+        public static string ManagerWeb_DisplayDeletionError {
+            get {
+                return ResourceManager.GetString("ManagerWeb_DisplayDeletionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pri načítavaní displeja s ID: {0} sa vyskytla chyba..
         /// </summary>
         public static string ManagerWeb_DisplayIdRetreivalError {
             get {

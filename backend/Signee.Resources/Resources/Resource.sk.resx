@@ -21,7 +21,7 @@
         <value>Pri načítavaní displejov sa vyskytla chyba.</value>
     </data>
     <data name="ManagerWeb_DisplayIdRetreivalError" xml:space="preserve">
-        <value>Pri načítavaní displeja s ID: {id} sa vyskytla chyba.</value>
+        <value>Pri načítavaní displeja s ID: {0} sa vyskytla chyba.</value>
     </data>
     <data name="ManagerWeb_CreatingDisplayError" xml:space="preserve">
         <value>Pri vytváraní nového displeja nastala chyba.</value>
@@ -31,5 +31,8 @@
     </data>
     <data name="Auth_LoginSuccessfull" xml:space="preserve">
         <value>Prihlásenie úspešné.</value>
+    </data>
+    <data name="ManagerWeb_DisplayDeletionError" xml:space="preserve">
+        <value>Pri vymazávaní displeja s ID: {0} sa vyskytla chyba.</value>
     </data>
 </root>

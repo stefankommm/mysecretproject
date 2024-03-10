@@ -17,7 +17,7 @@
             
             public string GetCurrentUserId()
             {
-                return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+                return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier)!;
             }
 
             public IEnumerable<Role> GetCurrentRoles()

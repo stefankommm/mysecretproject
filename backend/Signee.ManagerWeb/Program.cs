@@ -101,6 +101,7 @@ builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =
 });
 
 // Register services for Dependency Injection
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserContextProvider, UserContextProvider>();
 builder.Services.AddScoped<IAuthService>(s => new AuthService(s.GetRequiredService<IUserService>(), s.GetRequiredService<ITokenService>(), s.GetRequiredService<ILogger<AuthService>>()));

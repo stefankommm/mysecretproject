@@ -32,5 +32,6 @@ public class ApplicationDbContext : IdentityUserContext<ApplicationUser>
         //     .IsRequired();
 
         modelBuilder.Entity<Group>().Navigation(g => g.Displays).AutoInclude();
+        modelBuilder.HasDefaultSchema("public");
     }
 }

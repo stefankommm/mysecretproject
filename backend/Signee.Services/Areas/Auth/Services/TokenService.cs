@@ -58,28 +58,18 @@ public class TokenService : ITokenService
     /// <returns>A list of claims.</returns>
     private List<Claim> GenerateClaims(ApplicationUser user)
     {
-        var jwtSub = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("JwtTokenSettings")["JwtRegisteredClaimNamesSub"];
+        var claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id),                                              // Subject (unique ID of the user)
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),                            // Unique JWT identifier (so that it is not reused)
+            new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()), // Issued at time
+            new Claim(ClaimTypes.NameIdentifier, user.Id),                                                // User info stored in the token ...
+            new Claim(ClaimTypes.Name, user.UserName ?? throw new ArgumentNullException(nameof(user.UserName))),
+            new Claim(ClaimTypes.Email, user.Email ?? throw new ArgumentNullException(nameof(user.Email))),
+            new Claim(ClaimTypes.Role, user.Role.ToString())
+        };
         
-        try
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, jwtSub ?? throw new ArgumentNullException(nameof(jwtSub))),                                               // Subject (ID of our app)
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),                            // Unique JWT identifier (so that it is not reused)
-                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()), // Issued at time
-                new Claim(ClaimTypes.NameIdentifier, user.Id),                                                // User info stored in the token ...
-                new Claim(ClaimTypes.Name, user.UserName ?? throw new ArgumentNullException(nameof(user.UserName))),
-                new Claim(ClaimTypes.Email, user.Email ?? throw new ArgumentNullException(nameof(user.Email))),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
-            };
-            
-            return claims;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        return claims;
     }
 
     /// <summary>

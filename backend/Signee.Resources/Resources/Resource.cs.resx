@@ -25,7 +25,7 @@
         <value>Neplatné přihlašovací údaje.</value>
     </data>
     <data name="ManagerWeb_DisplayIdRetreivalError" xml:space="preserve">
-        <value>Při načítání displeje s ID: {id} se vyskytla chyba.</value>
+        <value>Při načítání displeje s ID: {0} se vyskytla chyba.</value>
     </data>
     <data name="ManagerWeb_DisplaysRetreivalError" xml:space="preserve">
         <value>Při načítání displejů se vyskytla chyba.</value>
@@ -38,5 +38,8 @@
     </data>
     <data name="Auth_LoginSuccessfull" xml:space="preserve">
         <value>Přihlášení úspěšné.</value>
+    </data>
+    <data name="ManagerWeb_DisplayDeletionError" xml:space="preserve">
+        <value>Při mazání displeje s ID: {0} se vyskytla chyba.</value>
     </data>
 </root>

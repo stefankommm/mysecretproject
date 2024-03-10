@@ -127,7 +127,7 @@
     <value>Prihlásenie úspešné.</value>
   </data>
   <data name="ManagerWeb_DisplayIdRetreivalError" xml:space="preserve">
-    <value>Pri načítavaní displeja s ID: {id} sa vyskytla chyba.</value>
+    <value>Pri načítavaní displeja s ID: {0} sa vyskytla chyba.</value>
   </data>
   <data name="ManagerWeb_DisplaysRetreivalError" xml:space="preserve">
     <value>Pri načítavaní displejov sa vyskytla chyba.</value>
@@ -137,5 +137,8 @@
   </data>
   <data name="PopulateDb_AdminUserCreationError" xml:space="preserve">
     <value>Pri vytváraní predvoleného admin účtu sa vyskytla chyba.</value>
+  </data>
+  <data name="ManagerWeb_DisplayDeletionError" xml:space="preserve">
+    <value>Pri vymazávaní displeja s ID: {0} sa vyskytla chyba.</value>
   </data>
 </root>

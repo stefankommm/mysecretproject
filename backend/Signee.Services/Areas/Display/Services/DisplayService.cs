@@ -107,7 +107,6 @@ public class DisplayService : IDisplayService
 
     public async Task AddAsync(Display display)
     {
-        display.Id = string.Empty;
         display.UserId = _userContextProvider.GetCurrentUserId();
         
         // #IOI1 - Displays within one group must have unique names
